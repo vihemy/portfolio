@@ -1,10 +1,10 @@
 export const metaData = {
-  baseUrl: "https://nextfolio-template.vercel.app/",
+  baseUrl: "https://vihemy.com",
   title: "vihemy",
   name: "Victor Hempel-Mydtskov",
   ogImage: "/opengraph-image.png", // TODO: change opengraph logo
   description:
-    "Victor Hempel-Mydtskov is a developer an interaction designer. This is his portfolio and blog.",
+    "I'm Victor Hempel-Mydtskov - a developer an interaction designer based in Copenhagen. This is my portfolio and blog.",
 };
 
 export const socialLinks = {
