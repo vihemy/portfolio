@@ -40,9 +40,9 @@ export const metadata: Metadata = {
     title: metaData.name,
     card: "summary_large_image",
   },
-  icons: {
-    icon: "/favicon.ico",
-  },
+  // icons: {
+  //   icon: "/favicon.ico",
+  // },
 };
 
 const cx = (...classes) => classes.filter(Boolean).join(" ");
@@ -73,6 +73,21 @@ export default function RootLayout({
           href="/feed.json"
           title="JSON Feed"
         />
+        <link
+          rel="icon"
+          type="image/png"
+          href="/favicons/favicon-96x96.png"
+          sizes="96x96"
+        />
+        <link rel="icon" type="image/svg+xml" href="/favicons/favicon.svg" />
+        <link rel="shortcut icon" href="/favicons/favicon.ico" />
+        <link
+          rel="apple-touch-icon"
+          sizes="180x180"
+          href="/favicons/apple-touch-icon.png"
+        />
+        <meta name="apple-mobile-web-app-title" content="vihemy.com" />
+        <link rel="manifest" href="/favicons/site.webmanifest" />
       </head>
       <body className="antialiased flex flex-col items-center justify-center mx-auto mt-2 lg:mt-8 mb-20 lg:mb-40">
         <ThemeProvider
