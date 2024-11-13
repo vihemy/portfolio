@@ -10,7 +10,7 @@ export const projects: Project[] = [
     title: "Idea Machine",
     year: 2024,
     description:
-      "A fantastical sci-fi machine that transforms user ideas on how to improve the ocean environment into imaginative illustrations, through a series of playful dashboards and DMX light fixture animations. Part of exhibition Dødvande (Dead Waters) at Danish aquarium Kattegatcentret.",
+      "A fantastical sci-fi machine that transforms user ideas on how to improve the ocean environment into imaginative illustrations. Part of exhibition Dødvande (Dead Waters) at Danish aquarium Kattegatcentret.",
     url: "https://github.com/vihemy/dinide",
   },
   {
