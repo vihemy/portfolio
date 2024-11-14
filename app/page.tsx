@@ -31,8 +31,8 @@ export default function Page() {
             bridging the gap between logical computer systems and fallible
             humans
           </strong>
-          . I create digital experiences that give users a sense of agency and
-          immersion, ideally sparking a bit of learning along the way.
+          . I always aim to give users a sense of agency and immersion, ideally
+          also sparking a bit of learning along the way.
         </p>
         <p>
           My work includes designing and developing interactive, site-specific
