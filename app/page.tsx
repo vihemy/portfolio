@@ -22,16 +22,26 @@ export default function Page() {
 
       <div className="prose prose-neutral dark:prose-invert">
         <p>
-          As a developer and interaction designer I work in the space between
-          logical systems and fallible humans.
+          Hi, I’m Victor—a creative developer... Or maybe I’m more of a
+          technical interaction designer? Or perhaps a creative technologist?
         </p>
         <p>
-          I am passionate about creating digital experiences that are both
-          intuitive and delightful.
+          Either way, my interests and expertise are{" "}
+          <strong>
+            bridging the gap between logical computer systems and fallible
+            humans
+          </strong>
+          . I create digital experiences that give users a sense of agency and
+          immersion, ideally sparking a bit of learning along the way.
         </p>
         <p>
-          This is my portfolio/blog where I share projects and
-          thoughts about creating and learning.
+          My work includes designing and developing interactive, site-specific
+          installations for exhibitions, audiowalks, and tools for collecting
+          and analyzing user behavior data.
+        </p>
+        <p>
+          On this site, I share my projects and thoughts on programming, design,
+          learning and probably other stuff too.
         </p>
         <p>
           Check out my{" "}
