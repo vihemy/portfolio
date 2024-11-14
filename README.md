@@ -11,3 +11,4 @@ Visit [vihemy.com](https://vihemy.com) to explore it.
 - [x] Deploy MVP version
 - [ ] Enhance /projects with project cards, including title, description, and images
 - [ ] Implement /projects/[slug] pages with multimedia support for each project
+- [ ] Add automatic generation of Table Of Content to /blog posts
