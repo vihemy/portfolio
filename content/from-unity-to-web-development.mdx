@@ -1,0 +1,120 @@
+---
+title: "From Unity to the Web: Exploring the Parallels Between Game Engines and Web Development"
+publishedAt: "2024-12-30"
+summary: "As a Unity developer transitioning to web development, I explore the surprising similarities and key differences between Unity/C# and web technologies like JavaScript and browsers."
+tags: "unity Development, web development, javascript, css, game engines, programming paradigms, c#, html, interactive experiences"
+---
+
+With a background in developing interactive experiences for exhibitions, I’ve spent a lot of time building Unity applications in site-specific contexts. But recently, I’ve ventured into the world of web development to reach a wider user base.
+
+It’s been fascinating to see how much of what I know from Unity translates into the browser. There are some unexpected similarities that make learning web development tools feel natural, but also differences that have caused me to reflect on the architecture and design choices behind both Unity/C# and browsers/JavaScript.
+
+Whether you're a Unity developer curious about web development, or a web developer intrigued by game engines, I think you'll find some of these parallels interesting as well.
+
+<Callout emoji="💡">
+  Since the first part of my web development journey has focused on web
+  fundamentals such as HTML, CSS, JavaScript, and DOM manipulation (shout out to
+  [The Odin Project](https://www.theodinproject.com/)), the following
+  comparisons are focused on vanilla web development tools, rather than
+  frameworks like React or Angular.
+</Callout>
+
+## Structure and Organization
+
+When first encountering a website's DOM (Document Object Model— how the structure of a website is represented in the browser), a Unity developer will likely be reminded of the Hierarchy Window. Just like the hierarchy window is responsible for structuring the parent/sibling relationships between gameObjects in a scene, the DOM does the same with HTML elements on a webpage.
+
+<Image
+  src="/DOM.png"
+  alt="Tree structure of a simple web page DOM"
+  width={640}
+  height={500}
+/>
+<Caption>DOM of a simple web page</Caption>
+Both are structured like trees, with a root and layers of nodes, each of which
+can have several child nodes.
+<Image
+  src="/HierarchyWindow.png"
+  alt="Tree structure as shown in Unitys Hierarchy Window"
+  width={400}
+  height={250}
+/>
+<Caption>Tree structure as shown in Unitys Hierarchy Window</Caption>
+
+This nested structure allows for:
+
+- **Inheritance**: In Unity, a child inherits the parent's transform; in the web, a child can inherit styles or event listeners from a parent.
+- **Traversal**: Nodes can be traversed programmatically to find and alter specific elements based on their relative position.
+- **Search**: When looking for a specific element, Unity and JavaScript use similar approaches. In Unity, you reference a gameObject or component by calling `GetComponent()` or `FindGameObject()`, while in JavaScript, you can use methods like `document.querySelector()`.
+
+## Styling
+
+In Unity, I often style my gameObjects using the Inspector, configuring components like TextMeshPro, Image, or Layout Groups directly. In web development, this is done with CSS. While styling can be applied directly in the HTML, it is common practice to separate concerns by having one or more files dedicated to CSS rules. In these files, colors, font sizes, padding, are defined. CSS even has a popular layout model called Flexbox, which strongly resembles Unity’s Horizontal/Vertical Layout Groups, which is used to layout rows and columns of elements.
+
+<Image
+  src="/TMPRO.png"
+  alt="UI of a TextMeshPro-component as shown in the Unity Inspector"
+  width={640}
+  height={500}
+/>
+<Caption>UI of a TextMeshPro-component as shown in the Unity Inspector</Caption>
+
+```
+/* Basic styling for a p-tag (parapgraph of text) */
+p {
+  font-family: "Arial", sans-serif; /* Set the font family */
+  font-size: 16px; /* Set the font size */
+  color: #333; /* Set the text color */
+  line-height: 1.6; /* Set the line height for readability */
+  margin: 10px 0; /* Add some space above and below the paragraph */
+  padding: 0 15px; /* Add some horizontal padding */
+  text-align: justify; /* Justify the text */
+  background-color: #f9f9f9; /* Set a light background color */
+  border-left: 4px solid #3498db; /* Add a left border */
+}
+```
+
+<Caption>CSS to style a paragraph of text</Caption>
+
+Both systems run algorithms to perform the styling under the hood, but the basic approach feels different. CSS uses a text interface, which means that it requires a bit of coding knowledge, whereas Unity uses a UI-based approach with 'tick boxes' in the Inspector, which is inherently more visual.
+
+## Programming Languages
+
+When it comes to the programming side of Unity and web development, the main difference is the language used. Unity uses C#, while JavaScript is the most popular language on the web. Here are some of the key differences between the two languages:
+
+- **Static/Dynamic Typing**: C# is a statically typed language, meaning that variables must have a declared type (e.g., `int`, `string`, `list`). If a variable’s type is not specified, doesn’t match the expected type, or is changed at runtime, an error is thrown. This rigid structure makes C# easy to debug and avoids unforeseen behavior. In contrast, JavaScript is dynamically typed, allowing variables to change type at runtime, or even be left unspecified. This flexibility makes JavaScript quicker to write but can lead to more runtime errors. (Coming from C# this may have been the biggest personal hurdle in picking up JavaScript. And i must admit, I'm a bit impatient to get to the TypeScript portion of my roadmap.)
+- **Compiled vs. Interpreted**: A key difference between the two languages lies in execution. When saving a C# script in Unity, it is _compiled_ into Common Intermediate Language (CIL), which is then bundled into assemblies by the C# compiler. This speeds up performance and helps catch errors early by checking for type-errors, syntax-errors, unreachable code and other stuff. When the game is played during runtime, the CIL code is converted to native machine code by a Just-In-Time (JIT) compiler, to be executed by the host. JavaScript, however, is an _interpreted_ language. It is not compiled ahead of time but is only converted to machine code by a JIT compiler at runtime. This makes JavaScript quicker to develop and more flexible but also means that errors are not caught beforehand, but must be found during runtime.
+- **Object-Oriented vs. Multi-Paradigm**: C# is built around _Object-Oriented Programming_ (OOP), where code is structured around objects and classes. This makes it easier to organize large projects using concepts such as encapsulation, inheritance and polymorphism. In Unity, creating a new script prompts you to create a new class. JavaScript, on the other hand, is multi-paradigm and does not require the developer to adhere to OOP principles. Although JavaScript supports OOP concepts like classes and inheritance, it also supports _Functional Programming_ concepts. This is apparent in functions being first-class citizens, meaning they can be passed as arguments, returned from other functions and assigned to variables. JavaScript's flexibility in terms of programming paradigms allows developers to use various or hybrid approaches to structure code.
+
+## Runtime Environment
+
+- **Deployment and Distribution**: When distributing a finished Unity application to a target device, it consists of an executable package along with various data files, including game assets, game logic code, libraries, and Unity’s own runtime environment. The runtime is responsible for graphics rendering, input handling, platform abstraction, and scripting execution. On the other hand, when distributing a web app, the user already has a runtime environment installed: the browser. In this sense, my mental model of web applications has shifted to thinking of them as data being sent to be executed in a browser, rather than an application in itself being delivered to a device (this model does not include backend server activities).
+- **Execution Lifecycle**: A runtime’s execution lifecycle defines the sequence and timing of events that manage the initialization, execution, and cleanup of an application. In Unity, this is reflected in methods like `Start()`, `Update()`, and `OnDestroy()`, which are accessible from any class that inherits from MonoBehaviour. These methods are called by Unity at specific points in the game loop, and whatever logic the developer inserts is executed accordingly. This is an example of the [template design pattern](https://refactoring.guru/design-patterns/template-method), where a superclass defines the skeleton of an algorithm and allows subclasses to override specific steps.
+
+```
+using UnityEngine;
+public class MyScript : MonoBehaviour {
+    void Start() {
+        Debug.Log("Start method called. This runs once.");
+    }
+    void Update() {
+        Debug.Log("Update method called. This runs every frame.");
+    }
+}
+```
+
+The browser’s lifecycle is similar but achieved differently. Browsers fire events such as `onload`, `DOMContentLoaded`, and `beforeunload` during specific phases of a webpage's lifetime. These events can be subscribed to, triggering specific behavior when loading or leaving a page. This is done using event listeners, which "listen" for an event and then call a function when it occurs. While this may seem similar to Unity’s approach, it’s mechanically different. Unity’s lifecycle uses inheritance from the MonoBehaviour base class to invoke methods in child classes, while the browser uses a subscription-based approach to handle events.
+
+```
+// Example: Listen for the 'DOMContentLoaded' event to perform setup
+document.addEventListener("DOMContentLoaded", function () {
+  console.log("Document is fully loaded and parsed!");
+});
+// Add an event listener for the unload event
+window.addEventListener("unload", function (event) {
+  console.log("The page is unloading. Do some cleanup.");
+});
+```
+
+## Conclusion
+
+Exploring the similarities and differences between Unity and web development has deepened my understanding of both. Seeing how different tools address similar challenges has highlighted the value of a broad knowledge base in software development. Despite their differences, Unity and web development share core principles, and learning web development has helped me better appreciate aspects of Unity and C# that I hadn’t fully grasped before.
