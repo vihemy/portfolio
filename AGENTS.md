@@ -18,9 +18,9 @@ Personal portfolio & blog for Victor Hempel-Mydtskov, built with Next.js and dep
 
 ## Tech Stack
 
-- **Framework:** Next.js 14.2.6 (App Router only, no Pages Router)
-- **UI:** React 18.3.1, Tailwind CSS 3.4.10
-- **Language:** TypeScript 5.5.4 (`strict: false`)
+- **Framework:** Next.js 16.2.12 (App Router only, no Pages Router)
+- **UI:** React 19.2.8, Tailwind CSS 3.4.17
+- **Language:** TypeScript 6.0.3 (`strict: false`)
 - **Content:** MDX via `next-mdx-remote` (content in `/content/`)
 - **Styling:** Tailwind CSS + `@tailwindcss/typography` + `geist` font
 - **Math:** `remark-math` + `rehype-katex` + `katex`
