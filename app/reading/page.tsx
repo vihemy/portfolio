@@ -61,7 +61,7 @@ export default function Reading() {
     <section>
       <h1 className="mb-4 text-2xl font-medium tracking-tight">Reading</h1>
       <p className="prose prose-neutral dark:prose-invert mb-10 text-neutral-600 dark:text-neutral-400">
-        As a curious person, I enjoy reading. About software, design, and interesting ideas in general. These are some of the books that has rewired my thinking.
+        As a naturally curious person, I read to feed a hungry mind — about software, design, and interesting ideas in general. These are some of the books that have shaped my thinking as a professional.
       </p>
 
       {groups.map(({ category, books }) => (
