@@ -1,4 +1,32 @@
-import React from "react";
+import Link from "next/link";
+
+function renderTakeaways(text: string) {
+  const parts = text.split(/(\[[^\]]+\]\([^)]+\))/g);
+
+  return (
+    <p className="text-base text-neutral-600 dark:text-neutral-400 mt-1 leading-relaxed">
+      {parts.map((part, i) => {
+        const match = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
+        if (match) {
+          const [_, label, href] = match;
+          if (href.startsWith("/")) {
+            return (
+              <Link key={i} href={href} className="underline-offset-2 underline">
+                {label}
+              </Link>
+            );
+          }
+          return (
+            <a key={i} href={href} target="_blank" rel="noopener noreferrer" className="underline-offset-2 underline">
+              {label}
+            </a>
+          );
+        }
+        return <>{part}</>;
+      })}
+    </p>
+  );
+}
 import type { Metadata } from "next";
 import { books } from "./reading-data";
 
@@ -33,7 +61,7 @@ export default function Reading() {
     <section>
       <h1 className="mb-4 text-2xl font-medium tracking-tight">Reading</h1>
       <p className="prose prose-neutral dark:prose-invert mb-10 text-neutral-600 dark:text-neutral-400">
-        I'm a curious person — so I read. About software, about design, and about interesting ideas in general. These are some books that rewired my thinking permanently.
+        As a curious person, I enjoy reading. About software, design, and interesting ideas in general. These are some of the books that has rewired my thinking.
       </p>
 
       {groups.map(({ category, books }) => (
@@ -51,11 +79,7 @@ export default function Reading() {
                   {" — "}
                   {book.author}
                 </span>
-                {book.takeaways && (
-                  <p className="text-base text-neutral-600 dark:text-neutral-400 mt-1 leading-relaxed">
-                    {book.takeaways}
-                  </p>
-                )}
+                {book.takeaways && renderTakeaways(book.takeaways)}
               </div>
             ))}
           </div>
