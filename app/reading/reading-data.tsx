@@ -53,12 +53,12 @@ export const books: Book[] = [
   //   author: "Kyle Chayka",
   //   category: "Design & Product",
   // },
-  {
-    title: "The Making of a Manager",
-    author: "Julie Zhuo",
-    category: "Design & Product",
-    takeaways: "I read this to better understand what makes a leader valuable — and left with a picture of someone with a positive multiplying effect on the team: enabling them, helping them grow and keeping their eye on the bigger picture. The framework that stuck with me: purpose, process, people."
-  },
+  // {
+  //   title: "The Making of a Manager",
+  //   author: "Julie Zhuo",
+  //   category: "Design & Product",
+  //   takeaways: "I read this to better understand what makes a leader valuable — and left with a picture of someone with a positive multiplying effect on the team: enabling them, helping them grow and keeping their eye on the bigger picture. The framework that stuck with me: purpose, process, people."
+  // },
   {
     title: "Range",
     author: "David Epstein",
