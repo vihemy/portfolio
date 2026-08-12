@@ -1,0 +1,96 @@
+---
+title: Diffusion Model Powered Portrait Pipeline
+year: 2024
+client: Nordiska Museet
+clientType: Nordic cultural-history museum
+role: Lead Programmer
+engagementType: Upgrade of existing system
+summary: I led the migration of an existing in-gallery AI photobooth rig from a fragile Windows + SMB + NDI stack to a Linux + systemd + SFTP service architecture, and upgraded the diffusion pipeline from an SD1.5 masking workflow to SDXL with identity-preserving InstantID + IPAdapter.
+tags: [Unity, ComfyUI, Stable Diffusion, systemd]
+stack: [Unity 6000.3, WebGL, Pixilab Blocks, ComfyUI, Stable Diffusion SDXL, InstantID, IPAdapter, Tornado, Paramiko, Python, Millumin, OSC, SFTP, systemd]
+hardware: Two photo-booth PCs (webcam + touchscreen), one AI PC, one Mac Mini, three projectors in a forest-themed Outro room
+integrations: [ComfyUI, Pixilab Blocks, Millumin, SFTP, OSC]
+privacyApproach: Booths do not store visitor selfies — uploads are deleted after delivery to the AI PC. The AI PC does not retain portraits beyond the projection cycle. No visitor PII leaves the museum network.
+outcomes: ["Replaced a fragile Windows batch-script rig with a Linux/systemd service stack that auto-restarts on failure and is operable by non-specialist gallery staff.", "Upgraded the diffusion pipeline from SD1.5 + rembg/masking to SDXL + InstantID + IPAdapter, producing identity-preserving stylized portraits without the visible cut-paste seams of the previous workflow.", "Removed the bespoke NDI streaming app by having the AI PC upload directly to the projection server over SFTP — fewer moving parts, fewer failure modes."]
+heroImage: /projects/diffusion-portrait-pipeline/new-result.png
+featured: true
+---
+
+At **Nordiska Museet** in Stockholm, built in collaboration with installation studio **noparking.dk**, an exhibition closes with an *Outro* experience: visitors enter one of two photo booths, navigate a wizard of choices to compose a stylized "selfie prompt", take a photo, and submit it. A back-end AI PC generates a stylized AI portrait using a self-hosted Stable Diffusion pipeline, and the finished portraits are projected into the forest-themed Outro room across three projectors, accompanied by ambient sound feedback.
+
+## Challenge
+
+The installation was already running when I joined the engagement, and it worked — but it was fragile. The original rig was assembled under deadline pressure with the tools the team knew best:
+
+- **AI PC on Windows**, all services launched via `.bat` scripts in `shell:startup`, rebooted daily at 07:00 via Task Scheduler.
+- **Image transport over Windows SMB file shares**: the AI PC polled `\\BOOTH01/...` and `\\BOOTH02/...` network paths for new selfies, and a separate batch pipeline pushed finished portraits to the projection Mac.
+- **NDI streamer**: a dedicated Unity application (`nordiska-ndi-stream`) loaded ComfyUI outputs onto a canvas and shipped them over NDI to **Millumin** on the projection Mac, also handling per-portrait positions/scale/timers and OSC feedback sounds.
+- **Stable Diffusion 1.5** with `Realistic_Vision_V5.1` plus a stack of custom nodes — `rembg` for background removal, `masquerade-nodes` for mask-by-text / cut-paste / color correction, `efficiency-nodes` for image overlay. The identity of the visitor was pieced back in by masking the original selfie onto the stylized background; the seams were often visible.
+- Tunnels between booth and AI PC were ad-hoc "super-fast auto-reconnecting WebSockets" — fine when they worked, opaque when they didn't.
+
+<Image
+  src="/projects/diffusion-portrait-pipeline/old-inputs.png"
+  alt="Screenshot of the original photo-booth wizard screens"
+  width={5856}
+  height={2592}
+  sizes="(max-width: 768px) 100vw, 900px"
+  className="w-full h-auto rounded-lg"
+/>
+<Caption>The original photo-booth wizard</Caption>
+
+It ran. It just didn't run *reliably*, and the operator experience was painful: a hung Python script meant a site visit, a hung NDI app meant a reboot of the whole rig, and any meaningful change to the ComfyUI workflow required me to re-edit the API-format JSON by hand on the AI PC at the venue.
+
+<Image
+  src="/projects/diffusion-portrait-pipeline/old-result.png"
+  alt="A stylized portrait produced by the original SD1.5 masking workflow"
+  width={1952}
+  height={3072}
+  sizes="(max-width: 768px) 100vw, 900px"
+  className="w-full h-auto rounded-lg"
+/>
+<Caption>Output from the original SD1.5 masking workflow</Caption>
+
+## Approach
+
+I rewrote the back-end as a small set of services that each do one thing and supervise themselves, then used the diffusion pipeline upgrade as the lever to rethink identity preservation.
+
+### From batch scripts to services
+
+The AI PC is now **Linux**, and everything runs under **systemd**. Three units — `comfyui.service`, `outro-python-server.service`, `uirobot.service` — auto-restart five seconds after any failure, expose structured logging via `journalctl`, and offer desktop shortcuts to "VIEW ALL LOGS" and "RESTART ALL SERVICES". The museum's daily 07:00 reboot is gone; nothing reboots unless something has actually broken, and when something has, it breaks cleanly and recovers without a person.
+
+### From SMB + NDI to HTTP + SFTP
+
+The photo booths now **POST** the captured selfie and prompt directly to a small **Tornado** web server on the AI PC over plain HTTP — one endpoint for upload, one for retrieval of the current selectable images at startup, one for metadata. Paramiko gives the same Tornado process an SFTP client, so finished portraits are written straight to the projection Mac's SFTP server. The bespoke NDI streaming Unity app is gone; **Millumin** + a small Python script on the projection Mac handle image selection, layout, and OSC feedback sound cues directly off the SFTP-shared directory.
+
+Fewer moving parts, fewer failure modes, fewer things for an operator to restart.
+
+### From SD1.5 masking to SDXL + InstantID + IPAdapter
+
+The diffusion pipeline upgrade was the part with the biggest visible payoff. The old workflow tried to *paste* the visitor back into a stylized scene — masks, cut, color-correct — and the paste-ups were always somewhat uncanny. The new workflow runs on **SDXL** (`JuggernautXL Ragnarok v9`) and uses two complementary custom nodes:
+
+- **InstantID** for facial recognition — preserves the visitor's identity across the stylized output.
+- **IPAdapter** for style and composition transfer — carries the chosen "look" without manual masking.
+
+<Image
+  src="/projects/diffusion-portrait-pipeline/new-inputs.png"
+  alt="Screenshot of the redesigned photo-booth wizard screens"
+  width={6848}
+  height={1792}
+  sizes="(max-width: 768px) 100vw, 900px"
+  className="w-full h-auto rounded-lg"
+/>
+<Caption>The redesigned photo-booth wizard</Caption>
+
+ComfyUI's manager is pinned to `network_mode = offline` so a flaky internet connection at boot can't take the installation down. Workflows are now version-controlled alongside the rest of the code; the Tornado server edits the API-format JSON at the well-known entry points (`prompt["6"]["inputs"]["text"]`, `prompt["16"]["inputs"]["image"]`, seed, steps) before submitting — predictable, diffable, and no longer something I have to babysit at the venue.
+
+## Operability & privacy
+
+Booths do not retain visitor selfies. The Unity WebGL photo-booth apps are deployed as **Pixilab Blocks** spots, started when the spot is turned on; after each selfie is posted to the AI PC, the file is deleted from the booth PC. The AI PC and projection Mac cycle finished portraits through the projection show and discard them; no portraits are archived on-site. Settings, localization (`se` / `en` JSON under `StreamingAssets/Localization`), and content are all editable without a rebuild, so gallery staff can swap wording or fix a typo while the spot is off.
+
+<Callout emoji="ℹ️">
+The AI workflow, deployment, and recovery paths shown above are described at the architectural level. Specific client hostnames, GitLab repository URLs, runbook PDFs, and anyDesk credentials used during the engagement are intentionally omitted from this case study.
+</Callout>
+
+## Outcomes
+
+The first thing visitors notice is that their stylized portrait looks like *them* — not like a stranger wearing their face on a cut-paste seam. The first thing the gallery staff notices is that nothing has to be manually restarted when they arrive in the morning. The first thing I notice is that the next time the diffusion model moves on, I'll be editing one version-controlled JSON and one Tornado handler rather than flying to Stockholm to click through ComfyUI's GUI.

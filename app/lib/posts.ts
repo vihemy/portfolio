@@ -15,13 +15,13 @@ function parseFrontmatter(fileContent: string) {
   let frontMatterBlock = match![1];
   let content = fileContent.replace(frontmatterRegex, "").trim();
   let frontMatterLines = frontMatterBlock.trim().split("\n");
-  let metadata: Partial<Metadata> = {};
+  let metadata: { [key: string]: any } = {};
 
   frontMatterLines.forEach((line) => {
     let [key, ...valueArr] = line.split(": ");
     let value = valueArr.join(": ").trim();
-    value = value.replace(/^['"](.*)['"]$/, "$1"); 
-    metadata[key.trim() as keyof Metadata] = value;
+    value = value.replace(/^['"](.*)['"]$/, "$1");
+    metadata[key.trim()] = value;
   });
 
   return { metadata: metadata as Metadata, content };
@@ -52,6 +52,85 @@ function getMDXData(dir: string) {
 
 export function getBlogPosts() {
   return getMDXData(path.join(process.cwd(), "content"));
+}
+
+const PROJECT_ARRAY_FIELDS = new Set([
+  "tags",
+  "stack",
+  "integrations",
+  "outcomes",
+]);
+
+function parseArrayField(value: string): string[] {
+  let inner = value.trim();
+  if (inner.startsWith("[") && inner.endsWith("]")) {
+    inner = inner.slice(1, -1);
+  }
+  // Quote-aware split: commas inside "..." or '...' do not act as separators,
+  // so outcomes like ["x, y", "z"] survive intact.
+  const re = /"((?:[^"\\]|\\.)*)"\s*|'((?:[^'\\]|\\.)*)'\s*|([^,]+)/g;
+  const out: string[] = [];
+  let match: RegExpExecArray | null;
+  while ((match = re.exec(inner)) !== null) {
+    const item = (match[1] ?? match[2] ?? match[3] ?? "").trim();
+    if (item === "" && match[3] === undefined) continue;
+    if (item) out.push(item);
+  }
+  return out;
+}
+
+function parseBooleanField(value: string): boolean {
+  return value.trim().toLowerCase() === "true";
+}
+
+function parseProjectFrontmatter(fileContent: string) {
+  let frontmatterRegex = /---\s*([\s\S]*?)\s*---/;
+  let match = frontmatterRegex.exec(fileContent);
+  let frontMatterBlock = match![1];
+  let content = fileContent.replace(frontmatterRegex, "").trim();
+  let frontMatterLines = frontMatterBlock.trim().split("\n");
+  let metadata: { [key: string]: any } = {};
+
+  frontMatterLines.forEach((line) => {
+    if (!line.trim() || !line.includes(": ")) return;
+    let [key, ...valueArr] = line.split(": ");
+    let keyName = key.trim();
+    let value = valueArr.join(": ").trim();
+    value = value.replace(/^['"](.*)['"]$/, "$1");
+
+    if (PROJECT_ARRAY_FIELDS.has(keyName)) {
+      metadata[keyName] = parseArrayField(value);
+    } else if (keyName === "year") {
+      metadata[keyName] = Number(value);
+    } else if (keyName === "featured") {
+      metadata[keyName] = parseBooleanField(value);
+    } else {
+      metadata[keyName] = value;
+    }
+  });
+
+  return { metadata, content };
+}
+
+function getProjectMDXData(dir: string) {
+  let mdxFiles = getMDXFiles(dir);
+  return mdxFiles.map((file) => {
+    let rawContent = fs.readFileSync(path.join(dir, file), "utf-8");
+    let { metadata, content } = parseProjectFrontmatter(rawContent);
+    let slug = path.basename(file, path.extname(file));
+
+    return {
+      metadata,
+      slug,
+      content,
+    };
+  });
+}
+
+export function getProjectPosts() {
+  return getProjectMDXData(
+    path.join(process.cwd(), "content", "projects")
+  );
 }
 
 export function formatDate(date: string, includeRelative = false) {

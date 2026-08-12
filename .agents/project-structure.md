@@ -7,6 +7,7 @@ portfolio/
 ├── AGENTS.md                         # AI agent documentation
 ├── .agents/                          # Agent context files
 │   ├── project-structure.md          # This file
+│   ├── projects-feature-plan.md      # /projects case-study feature plan
 │   ├── upgrade-plan.md               # Dependency upgrade analysis
 │   └── deployment.md                 # Deployment pipeline docs
 ├── app/
