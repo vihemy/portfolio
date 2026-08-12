@@ -51,7 +51,7 @@ function getMDXData(dir: string) {
 }
 
 export function getBlogPosts() {
-  return getMDXData(path.join(process.cwd(), "content"));
+  return getMDXData(path.join(process.cwd(), "content", "blog"));
 }
 
 const PROJECT_ARRAY_FIELDS = new Set([
