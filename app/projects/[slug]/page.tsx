@@ -143,20 +143,6 @@ export default async function ProjectPage({
         {m.hardware && <MetaRow label="Hardware">{m.hardware}</MetaRow>}
       </dl>
 
-      {m.outcomes && m.outcomes.length > 0 && (
-        <div className="mb-12 rounded-lg bg-[#F7F7F7] dark:bg-[#181818] p-5 border border-neutral-200 dark:border-neutral-800">
-          <h2 className="text-base font-medium tracking-tight mb-3">Outcomes</h2>
-          <ul className="space-y-2 text-sm text-neutral-800 dark:text-neutral-200">
-            {m.outcomes.map((o) => (
-              <li key={o} className="flex gap-2">
-                <span aria-hidden className="text-neutral-500 dark:text-neutral-400">&ndash;</span>
-                <span>{o}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
       <article className="prose prose-quoteless prose-neutral dark:prose-invert">
         <CustomMDX source={post.content} />
       </article>

@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import type { Project, ProjectPost } from "../projects/project-data";
 
 type Metadata = {
   title: string;
@@ -57,7 +58,6 @@ export function getBlogPosts() {
 const PROJECT_ARRAY_FIELDS = new Set([
   "tags",
   "stack",
-  "outcomes",
 ]);
 
 function parseArrayField(value: string): string[] {
@@ -66,8 +66,8 @@ function parseArrayField(value: string): string[] {
     inner = inner.slice(1, -1);
   }
   // Quote-aware split: commas inside "..." or '...' do not act as separators,
-  // so outcomes like ["x, y", "z"] survive intact.
-  const re = /"((?:[^"\\]|\\.)*)"\s*|'((?:[^'\\]|\\.)*)'\s*|([^,]+)/g;
+  // so tags like ["AI, ML", "Unity"] survive intact.
+  const re = /"((?:[^"\\]|\\.)*)"\s*|'((?:[^'\\]|\\.)*)'\s*|([^,"']+)/g;
   const out: string[] = [];
   let match: RegExpExecArray | null;
   while ((match = re.exec(inner)) !== null) {
@@ -108,10 +108,10 @@ function parseProjectFrontmatter(fileContent: string) {
     }
   });
 
-  return { metadata, content };
+  return { metadata: metadata as Project, content };
 }
 
-function getProjectMDXData(dir: string) {
+function getProjectMDXData(dir: string): ProjectPost[] {
   let mdxFiles = getMDXFiles(dir);
   return mdxFiles.map((file) => {
     let rawContent = fs.readFileSync(path.join(dir, file), "utf-8");
@@ -126,7 +126,7 @@ function getProjectMDXData(dir: string) {
   });
 }
 
-export function getProjectPosts() {
+export function getProjectPosts(): ProjectPost[] {
   return getProjectMDXData(
     path.join(process.cwd(), "content", "projects")
   );

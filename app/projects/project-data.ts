@@ -9,7 +9,6 @@ export interface Project {
   tags: string[];
   stack: string[];
   hardware?: string;
-  outcomes: string[];
   heroImage: string;
   featured?: boolean;
 }

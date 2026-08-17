@@ -9,10 +9,20 @@ stack: [Unity, Universal Render Pipeline (URP), C#, FSM, UnityWebRequest, Unity 
 summary: A fantastical sci-fi–themed installation that takes a visitor's idea for improving the ocean environment, moderates it in three languages, generates an AI image via OpenAI's DALL·E, classifies it for topical relevance, and projects the result into a synchronized four-screen + DMX light show. I delivered the full Unity application solo.
 tags: [Unity, C#, OpenAI, DALL·E]
 hardware: One PC driving four displays — a text-input screen, a visualization screen, and two dashboard screens — plus one DMX light fixture synchronized with the show
-outcomes: ["Designed a finite state machine that takes a visitor idea, moderates it for profanity in three languages, classifies it for topical relevance via a second model call, and routes the result into a synchronized four-screen + DMX light show.", "Made the installation operable by gallery staff without a rebuild: API keys, model selection, image size, system context, and the profanity word lists all live as plain-text files in StreamingAssets.", "Built a 15-entry rolling slideshow of 'relevant' AI-generated images with fallback entries from StreamingAssets, so the exhibit is never blank on a cold start or during an OpenAI outage.", "Single-engineer delivery: shipped the full FSM, profanity filter, OpenAI integration, image downloader, dashboard, audio, and light controller."]
 heroImage: /projects/genai-idea-visualizer/dodvande-exhibition.jpg
 featured: true
 ---
+
+<Callout emoji="✦">
+
+**Outcomes**
+
+- Designed a finite state machine that takes a visitor idea, moderates it for profanity in three languages, classifies it for topical relevance via a second model call, and routes the result into a synchronized four-screen + DMX light show.
+- Made the installation operable by gallery staff without a rebuild: API keys, model selection, image size, system context, and the profanity word lists all live as plain-text files in StreamingAssets.
+- Built a 15-entry rolling slideshow of 'relevant' AI-generated images with fallback entries from StreamingAssets, so the exhibit is never blank on a cold start or during an OpenAI outage.
+- Single-engineer delivery: shipped the full FSM, profanity filter, OpenAI integration, image downloader, dashboard, audio, and light controller.
+
+</Callout>
 
 The *Dødvande* ("Dead Water") exhibition at **Kattegatcentret**, the Danish aquarium in Grenaa, is anchored by an installation that turns visitor ideas into generated images. Guests walk up to a fantastical sci-fi–themed enclosure, type an idea for improving the ocean environment into a text-input screen, and watch as the machine "transforms" their idea into an imaginative illustration — synchronized across four displays and a DMX light fixture.
 

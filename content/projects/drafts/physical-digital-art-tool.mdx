@@ -9,10 +9,20 @@ stack: [SvelteKit 2, Svelte 5, Vite, TypeScript, better-sqlite3, MQTT, Sanity, P
 summary: I built a turnkey multi-surface museum platform end-to-end — SvelteKit 2 + SQLite + Sanity + MQTT-ingested NFC handhelds + Svelte 5 kiosk UIs + a live wall-display analytics surface — with research-data exports the museum uses to study visitor behaviour.
 tags: [SvelteKit, Sanity, MQTT, SQLite]
 hardware: Custom NFC-scanning handheld devices, touchscreen kiosks, visitors' own smartphones, large wall displays
-outcomes: ["Owned end-to-end delivery — schema design, background workers, Svelte UI, deployment and ops — as the sole full-stack engineer.", "Built fault-tolerant MQTT ingestion that survives sloppy embedded payloads via multi-pass JSON parsing with per-interaction error isolation and a raw-dump audit trail.", "Designed survey data with DB-level CHECK constraints validating JSON structure and physical units so bad telemetry is rejected at the storage layer.", "A real-time SSE broadcast hub lets any kiosk POST an entry and every open stream on a synchronized multi-surface experience receive it."]
 heroImage: /projects/physical-digital-art-tool/data-flow.png
 featured: true
 ---
+
+<Callout emoji="✦">
+
+**Outcomes**
+
+- Owned end-to-end delivery — schema design, background workers, Svelte UI, deployment and ops — as the sole full-stack engineer.
+- Built fault-tolerant MQTT ingestion that survives sloppy embedded payloads via multi-pass JSON parsing with per-interaction error isolation and a raw-dump audit trail.
+- Designed survey data with DB-level CHECK constraints validating JSON structure and physical units so bad telemetry is rejected at the storage layer.
+- A real-time SSE broadcast hub lets any kiosk POST an entry and every open stream on a synchronized multi-surface experience receive it.
+
+</Callout>
 
 At **Trapholt** in Kolding, Denmark, an exhibition themed around the Danish concept of being a self-appointed judge of taste asks visitors to form and share opinions about art, then reflect on who they are and what they prefer. The platform I built ties together the devices the visitor touches into one continuous experience and harvests the research data the museum uses to study visitor behaviour.
 
