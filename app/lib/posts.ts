@@ -57,7 +57,6 @@ export function getBlogPosts() {
 const PROJECT_ARRAY_FIELDS = new Set([
   "tags",
   "stack",
-  "integrations",
   "outcomes",
 ]);
 

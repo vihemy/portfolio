@@ -4,13 +4,11 @@ year: 2024
 client: Kattegatcentret
 clientType: Danish aquarium
 role: Lead Developer
-engagementType: Standalone app
+projectType: Standalone app
+stack: [Unity, Universal Render Pipeline (URP), C#, FSM, UnityWebRequest, Unity JsonUtility, OpenAI DALL·E, OpenAI Completion, DMX integration]
 summary: A fantastical sci-fi–themed installation that takes a visitor's idea for improving the ocean environment, moderates it in three languages, generates an AI image via OpenAI's DALL·E, classifies it for topical relevance, and projects the result into a synchronized four-screen + DMX light show. I delivered the full Unity application solo.
 tags: [Unity, C#, OpenAI, DALL·E]
-stack: [Unity, Universal Render Pipeline (URP), C#, FSM, UnityWebRequest, Unity JsonUtility, OpenAI DALL·E, OpenAI Completion, DMX integration]
 hardware: One PC driving four displays — a text-input screen, a visualization screen, and two dashboard screens — plus one DMX light fixture synchronized with the show
-integrations: [OpenAI DALL·E, OpenAI Completion, DMX fixture]
-privacyApproach: Visitor prompts are archived locally on the exhibit PC and never uploaded anywhere except OpenAI for image generation. The live OpenAI API key never leaves the installation machine and is not reproduced in any public artefact.
 outcomes: ["Designed a finite state machine that takes a visitor idea, moderates it for profanity in three languages, classifies it for topical relevance via a second model call, and routes the result into a synchronized four-screen + DMX light show.", "Made the installation operable by gallery staff without a rebuild: API keys, model selection, image size, system context, and the profanity word lists all live as plain-text files in StreamingAssets.", "Built a 15-entry rolling slideshow of 'relevant' AI-generated images with fallback entries from StreamingAssets, so the exhibit is never blank on a cold start or during an OpenAI outage.", "Single-engineer delivery: shipped the full FSM, profanity filter, OpenAI integration, image downloader, dashboard, audio, and light controller."]
 heroImage: /projects/genai-idea-visualizer/dodvande-exhibition.jpg
 featured: true
@@ -86,14 +84,6 @@ A `DashboardManager` animates the "transformation" effect across two dedicated d
 ### Persistence and recovery
 
 Generated images are downloaded via `UnityWebRequest`, saved as JPG alongside a JSON metadata file (prompt, name, age, creation time, relevance flags) in `Application.persistentDataPath`. The slideshow reads from there on boot, so an exhibit that woke up offline still has something to show from yesterday's relevant submissions.
-
-## Operability & privacy
-
-Visitor prompts are archived locally on the exhibit PC. The open-source repository at `github.com/vihemy/dinide` is published for code-demonstration purposes; the live OpenAI API key is **not** in the repo, is **not** reproduced in any screenshot or case-study artefact, and lives only in the deployed machine's `StreamingAssets/config.txt`.
-
-<Callout emoji="ℹ️">
-Visitor-submitted text and any associated metadata stay on the exhibit machine. No real visitor data is shown in this case study.
-</Callout>
 
 ## Outcomes
 

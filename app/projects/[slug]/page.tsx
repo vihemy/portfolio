@@ -136,19 +136,11 @@ export default async function ProjectPage({
 
       <dl className="mb-8 max-w-xl">
         <MetaRow label="Role">{m.role}</MetaRow>
-        <MetaRow label="Engagement">{m.engagementType}</MetaRow>
-        {m.hardware && <MetaRow label="Hardware">{m.hardware}</MetaRow>}
+        <MetaRow label="Type">{m.projectType}</MetaRow>
         <MetaRow label="Stack">
           <ChipList items={m.stack} />
         </MetaRow>
-        {m.integrations && m.integrations.length > 0 && (
-          <MetaRow label="Integrations">
-            <ChipList items={m.integrations} />
-          </MetaRow>
-        )}
-        {m.privacyApproach && (
-          <MetaRow label="Privacy approach">{m.privacyApproach}</MetaRow>
-        )}
+        {m.hardware && <MetaRow label="Hardware">{m.hardware}</MetaRow>}
       </dl>
 
       {m.outcomes && m.outcomes.length > 0 && (

@@ -2,17 +2,17 @@
 
 ## Goal
 
-Replace the flat external-link `/projects` page with a case-study index → detail-page pattern. Each case study is an *evidence package*: a privacy-respecting narrative that proves technical adeptness, a product/user-value orientation, and a problem-solving mindset (decisions and rationale over stack name-drops).
+Replace the flat external-link `/projects` page with a case-study index → detail-page pattern. Each case study is an *evidence package*: a narrative that proves technical adeptness, a product/user-value orientation, and a problem-solving mindset (decisions and rationale over stack name-drops).
 
 Messaging axes (per the site's existing positioning in `app/config.ts`):
 - I'm technically adept — multi-device systems, AI pipelines, operability engineering.
-- I focus on product and user value — visitor experience, privacy, multi-language UX.
+- I focus on product and user value — visitor experience, multi-language UX, research-useful data.
 - I solve problems, not only implement others' solutions — Challenge → Approach → Outcomes arc.
 
 Three v1 case studies sourced from `project_documentation/`:
 
 1. **Nordiska Museet — Diffusion Model Powered Portrait Pipeline** — *Upgrading an existing AI photobooth installation.* Lead Programmer. Story: Windows/SMB/NDI/SD1.5 ad-hoc rig → Linux/systemd/SFTP service-oriented rig with an SDXL + InstantID + IPAdapter identity-preserving pipeline.
-2. **Trapholt — Physical-Digital Art Exploration Tool** — *Building a multi-device museum platform from scratch.* Full-stack engineer (SvelteKit 2 + Sanity + MQTT ingestion + SSE multi-surface sync + privacy-engineered research-data exports).
+2. **Trapholt — Physical-Digital Art Exploration Tool** — *Building a multi-device museum platform from scratch.* Full-stack engineer (SvelteKit 2 + Sanity + MQTT ingestion + SSE multi-surface sync + research-data exports).
 3. **Kattegatcentret — GenAI Idea Visualizer** — *Standalone AI installation app.* Lead Developer (Unity/C# FSM → profanity+relevance moderation → OpenAI DALL·E + completion model → 4-screen + DMX synchronized show).
 
 ## Naming policy
@@ -42,18 +42,16 @@ Scalars parsed by the existing line-split parser in `app/lib/posts.ts`. Array fi
 
 | Field | Type | Required | Notes |
 |---|---|---|---|
-| `title` | string | yes | Public title (exhibition name, not codename) |
+| `title` | string | yes | Public title — technical descriptor of what the system is (not the client's working title) |
 | `year` | number | yes | Year of delivery |
 | `client` | string | yes when permitted | Museum name |
 | `clientType` | string | yes | e.g. "Nordic cultural-history museum" |
 | `role` | string | yes | "Lead Developer" / "Lead Programmer" / "Full-stack engineer" |
-| `engagementType` | string | yes | "Standalone app" / "Upgrade of existing system" / "Greenfield build" |
+| `projectType` | string | yes | "Standalone app" / "Upgrade of existing system" / "Greenfield build" |
+| `stack` | string[] | yes | Full structured stack list — includes both internal tech and external systems/services (no separate `integrations` field) |
 | `summary` | string | yes | 1–2 sentence strapline for the card |
 | `tags` | string[] | yes | Up to ~4 stack/skill chips |
-| `stack` | string[] | yes | Full structured stack list (rendered on detail page) |
 | `hardware` | string | optional | Devices/surfaces, or omitted for non-hardware projects (e.g., MCP server) |
-| `integrations` | string[] | optional | External systems (Pixilab Blocks, SARA, Mailchimp, OpenAI, etc.) |
-| `privacyApproach` | string | optional | Short prose on what was done to protect visitor data |
 | `outcomes` | string[] | yes | Descriptive impact bullets (*not* quantitative). Top item surfaces on the card; full list renders on detail page. |
 | `heroImage` | string | yes | Path under `public/`, e.g. `/projects/nordiska/before-after.png` |
 | `featured` | boolean | optional | Pin to top of index (default false) |
@@ -65,7 +63,7 @@ Images are placed inline in the MDX body where they support the description, ren
 Recommended section headings (shape may flex per project):
 - `## Challenge`
 - `## Approach`
-- `## Operability & privacy`
+- `## Operability` (deployment, recovery, operator UX)
 - `## Outcomes` (expand on the frontmatter outcomes array)
 
 ## Routes & code
@@ -96,7 +94,7 @@ Files to delete / supersede:
 ### Index page (`app/projects/page.tsx`)
 
 - Short prose intro paragraph articulating the recurring pattern across the work (interactive installations + AI pipelines + operability + multilingual UX) and the role axis. Reinforces problem-solver messaging.
-- Responsive card grid. Each card shows: hero image, title, year corner marker, summary line, and chips for role · engagement type · client (when public) · stack tags. Top `outcomes` bullet surfaced as muted text under summary on hover/secondary line.
+- Responsive card grid. Each card shows: hero image, title, year corner marker, summary line, and chips for role · project type · client (when public) · stack tags. Top `outcomes` bullet surfaced as muted text under summary on hover/secondary line.
 
 ### Detail page (`app/projects/[slug]/page.tsx`)
 
@@ -106,7 +104,7 @@ Mirrors `app/blog/[slug]/page.tsx`:
 - `CustomMDX` for the body
 - JSON-LD `Article` structured data
 - OG image reuses existing `/og?title=…` endpoint (no new OG plumbing)
-- Renders the structured frontmatter as a metadata sidebar/header (role, year, client, engagementType, stack list, integrations, privacyApproach) and the `outcomes` array as a bullet list, then the MDX body (which contains the inline images at natural aspect ratio).
+- Renders the structured frontmatter as a metadata sidebar/header (role, projectType, stack list, hardware) and the `outcomes` array as a bullet list, then the MDX body (which contains the inline images at natural aspect ratio).
 
 ### Sitemap & SEO
 
@@ -117,7 +115,7 @@ Mirrors `app/blog/[slug]/page.tsx`:
 ### 1. Nordiska — `diffusion-portrait-pipeline.mdx`
 
 - **Hero:** `new docs/new_result.png`. Inline body images: `old docs/old_inputts.png` + `old docs/old_result.png` in the Challenge section (the fragile original rig), `new docs/new_inputs.png` in the Approach section (the redesigned wizard) — the strongest before/after delta story of the three.
-- **Frontmatter:** year flagged as 2024 (paths use `240206`); client "Nordiska Museet"; clientType "Nordic cultural-history museum"; role "Lead Programmer"; engagementType "Upgrade of existing system"; tags `[Unity, ComfyUI, Stable Diffusion, systemd]`; stack adds `Pixilab Blocks, Tornado, Paramiko, Millumin, OSC, SFTP, InstantID, IPAdapter, SDXL`; integrations `[ComfyUI, Pixilab Blocks, Millumin, SFTP]`; outcomes (descriptive, not quantitative):
+- **Frontmatter:** year flagged as 2024 (paths use `240206`); client "Nordiska Museet"; clientType "Nordic cultural-history museum"; role "Lead Programmer"; projectType "Upgrade of existing system"; tags `[Unity, ComfyUI, Stable Diffusion, systemd]`; stack `[Unity 6000.3, WebGL, Pixilab Blocks, ComfyUI, Stable Diffusion SDXL, InstantID, IPAdapter, Tornado, Paramiko, Python, Millumin, OSC, SFTP, systemd]`; outcomes (descriptive, not quantitative):
   - "Replaced a fragile Windows batch-script rig with a Linux/systemd service stack that auto-restarts on failure and is operable by non-specialist gallery staff."
   - "Upgraded the diffusion pipeline from SD1.5 + rembg/masking to SDXL + InstantID + IPAdapter, producing identity-preserving stylized portraits without the visible cut-paste seams of the previous workflow."
   - "Removed the bespoke NDI streaming app by having the AI PC upload directly to the projection server over SFTP — fewer moving parts, fewer failure modes."
@@ -127,11 +125,10 @@ Mirrors `app/blog/[slug]/page.tsx`:
 ### 2. Trapholt — `physical-digital-art-tool.mdx`
 
 - **Hero:** `data-flow.png` (system architecture). Inline body images: `data_handling.png` in the Approach section (data pipeline), `12213-Trapholt-Til-Vaegs-010-1366x911.jpg` in the Approach section (wall display).
-- **Frontmatter:** year marked 2024; client "Trapholt"; clientType "Danish art & design museum"; role "Full-stack engineer"; engagementType "Greenfield build"; tags `[SvelteKit, Sanity, MQTT, SQLite]`; stack adds `Svelte 5, Vite, better-sqlite3, Pixilab Blocks (via @nopa/svelte-plus-blocks), Chart.js, simple-keyboard, PM2, node-cron, OpenAI, Mailchimp/Mandrill, Google Sheets API`; integrations `[Sanity, museum collection API, Mailchimp, OpenAI, Google Sheets]`; outcomes (descriptive):
+- **Frontmatter:** year marked 2024; client "Trapholt"; clientType "Danish art & design museum"; role "Full-stack engineer"; projectType "Greenfield build"; tags `[SvelteKit, Sanity, MQTT, SQLite]`; stack `[SvelteKit 2, Svelte 5, Vite, TypeScript, better-sqlite3, MQTT, Sanity, Pixilab Blocks, Chart.js, simple-keyboard, PM2, node-cron, OpenAI, Mailchimp/Mandrill, Google Sheets API, museum collection-management API]`; outcomes (descriptive):
   - "Owned end-to-end delivery — schema design, background workers, Svelte UI, deployment and ops — as the sole full-stack engineer."
   - "Built fault-tolerant MQTT ingestion that survives sloppy embedded payloads via multi-pass JSON parsing with per-interaction error isolation and a raw-dump audit trail."
   - "Designed survey data with DB-level CHECK constraints validating JSON structure *and* physical units (mV/V, °C/F/K/R, %/RH, hPa/mb) so bad telemetry is rejected at the storage layer."
-  - "Engineered visitor-data privacy by default: emails hashed before export, postal codes mapped to Danish regions, log-obscuring script for historical emails — so research exports never leak PII."
   - "Real-time SSE broadcast hub lets any kiosk POST an entry and every open stream on a synchronized multi-surface experience receive it."
 - **Body MDX** draws on the portfolio-edition `project_description.md`. Optional internal codename "The Intrinsic Node" appears as a subtitle inside the case; the public-facing title uses the exhibition's framing.
 - **Privacy strip:** rename internal asset code `12213-Trapholt-Til-Vaegs-010` when copying the WebP into `public/`; reference SARA as "the museum's collection-management API" until explicitly confirmed otherwise.
@@ -139,7 +136,7 @@ Mirrors `app/blog/[slug]/page.tsx`:
 ### 3. Kattegatcentret — `genai-idea-visualizer.mdx`
 
 - **Hero:** `installation.jpg` (the physical rig). Inline body image: `sequence_diagram_uml.png` in the Approach section (runtime flow, right after the FSM callout).
-- **Frontmatter:** year 2024; client "Kattegatcentret"; clientType "Danish aquarium"; role "Lead Developer"; engagementType "Standalone app"; tags `[Unity, C#, OpenAI, DALL·E]`; stack adds `URP, FSM, UnityWebRequest, Unity JsonUtility, DMX integration`; integrations `[OpenAI DALL·E, OpenAI Completion, DMX fixture]`; outcomes (descriptive):
+- **Frontmatter:** year 2024; client "Kattegatcentret"; clientType "Danish aquarium"; role "Lead Developer"; projectType "Standalone app"; tags `[Unity, C#, OpenAI, DALL·E]`; stack `[Unity, URP, C#, FSM, UnityWebRequest, Unity JsonUtility, OpenAI DALL·E, OpenAI Completion, DMX integration]`; outcomes (descriptive):
   - "Designed a finite state machine that takes a visitor idea → moderates for profanity in three languages → classifies for topical relevance via a second model call → routes the result into a synchronized 4-screen + DMX light show."
   - "Made the installation operable by gallery staff without a rebuild: API keys, model selection, image size, system context, and the profanity word lists all live as plain-text files in StreamingAssets."
   - "Built a 15-entry rolling slideshow of 'relevant' AI-generated images with fallback entries from StreamingAssets, so the exhibit is never blank on a cold start or during an OpenAI outage."
@@ -149,7 +146,7 @@ Mirrors `app/blog/[slug]/page.tsx`:
 
 ## Future-proofing
 
-- Adding a new case study = drop one `.mdx` in `content/projects/` filling the shared `Project` schema. Optional fields are genuinely optional (the upcoming **MCP server** project simply omits `hardware`, `client`, `clientType`; sets `engagementType: "Tooling / Open-source"`). Schema is a superset by design, so adding fields later propagates from a single type definition in `project-data.ts`.
+- Adding a new case study = drop one `.mdx` in `content/projects/` filling the shared `Project` schema. Optional fields are genuinely optional (the upcoming **MCP server** project simply omits `hardware`, `client`, `clientType`; sets `projectType: "Tooling / Open-source"`). Schema is a superset by design, so adding fields later propagates from a single type definition in `project-data.ts`.
 - The card and detail page both read the same shared `Project` type, so card-up addition runs zero bespoke wiring.
 
 ## Out of scope for v1

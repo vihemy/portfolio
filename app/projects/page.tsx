@@ -36,12 +36,7 @@ export default function Projects() {
       <h1 className="mb-8 text-2xl font-medium tracking-tight">Projects</h1>
       <div className="prose prose-neutral dark:prose-invert mb-12">
         <p>
-          The work below is a small selection of things I&rsquo;ve led or built
-          end-to-end. They share a shape: multi-device systems, some form of AI
-          pipeline, a real audience in front of them, and an operator who has to
-          keep them running. I&rsquo;ve written each as a short case study so
-          the decisions and trade-offs &mdash; not just the stack &mdash; come
-          through.
+          These are some of the client projects I've played a major part in developing. If your're interested in knowing more about implementation or process, feel free to reach out.
         </p>
       </div>
 
@@ -88,7 +83,7 @@ export default function Projects() {
 
                 <div className="flex flex-wrap gap-1.5 mt-1">
                   <Chip>{m.role}</Chip>
-                  <Chip>{m.engagementType}</Chip>
+                  <Chip>{m.projectType}</Chip>
                   {m.tags.slice(0, 4).map((tag) => (
                     <Chip key={tag}>{tag}</Chip>
                   ))}

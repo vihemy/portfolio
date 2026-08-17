@@ -4,13 +4,11 @@ export interface Project {
   client: string;
   clientType: string;
   role: string;
-  engagementType: string;
+  projectType: string;
   summary: string;
   tags: string[];
   stack: string[];
   hardware?: string;
-  integrations?: string[];
-  privacyApproach?: string;
   outcomes: string[];
   heroImage: string;
   featured?: boolean;

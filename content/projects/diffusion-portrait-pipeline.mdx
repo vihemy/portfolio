@@ -1,16 +1,14 @@
 ---
 title: Diffusion Model Powered Portrait Pipeline
-year: 2024
+year: 2026
 client: Nordiska Museet
 clientType: Nordic cultural-history museum
-role: Lead Programmer
-engagementType: Upgrade of existing system
-summary: I led the migration of an existing in-gallery AI photobooth rig from a fragile Windows + SMB + NDI stack to a Linux + systemd + SFTP service architecture, and upgraded the diffusion pipeline from an SD1.5 masking workflow to SDXL with identity-preserving InstantID + IPAdapter.
+role: Lead Developer
+projectType: Upgrade of existing system
+stack: [ComfyUI, SDXL, Unity, WebGL, Pixilab Blocks, InstantID, IPAdapter, Python, SFTP, systemd]
+summary: I was the lead developer on this migration of an existing in-museum AI portrait generator system. from a fragile Windows + SMB + NDI stack to a Linux + systemd + SFTP service architecture, and upgraded the diffusion pipeline from an SD1.5 masking workflow to SDXL with identity-preserving InstantID + IPAdapter.
 tags: [Unity, ComfyUI, Stable Diffusion, systemd]
-stack: [Unity 6000.3, WebGL, Pixilab Blocks, ComfyUI, Stable Diffusion SDXL, InstantID, IPAdapter, Tornado, Paramiko, Python, Millumin, OSC, SFTP, systemd]
 hardware: Two photo-booth PCs (webcam + touchscreen), one AI PC, one Mac Mini, three projectors in a forest-themed Outro room
-integrations: [ComfyUI, Pixilab Blocks, Millumin, SFTP, OSC]
-privacyApproach: Booths do not store visitor selfies — uploads are deleted after delivery to the AI PC. The AI PC does not retain portraits beyond the projection cycle. No visitor PII leaves the museum network.
 outcomes: ["Replaced a fragile Windows batch-script rig with a Linux/systemd service stack that auto-restarts on failure and is operable by non-specialist gallery staff.", "Upgraded the diffusion pipeline from SD1.5 + rembg/masking to SDXL + InstantID + IPAdapter, producing identity-preserving stylized portraits without the visible cut-paste seams of the previous workflow.", "Removed the bespoke NDI streaming app by having the AI PC upload directly to the projection server over SFTP — fewer moving parts, fewer failure modes."]
 heroImage: /projects/diffusion-portrait-pipeline/new-result.png
 featured: true
@@ -83,13 +81,9 @@ The diffusion pipeline upgrade was the part with the biggest visible payoff. The
 
 ComfyUI's manager is pinned to `network_mode = offline` so a flaky internet connection at boot can't take the installation down. Workflows are now version-controlled alongside the rest of the code; the Tornado server edits the API-format JSON at the well-known entry points (`prompt["6"]["inputs"]["text"]`, `prompt["16"]["inputs"]["image"]`, seed, steps) before submitting — predictable, diffable, and no longer something I have to babysit at the venue.
 
-## Operability & privacy
+## Operability
 
-Booths do not retain visitor selfies. The Unity WebGL photo-booth apps are deployed as **Pixilab Blocks** spots, started when the spot is turned on; after each selfie is posted to the AI PC, the file is deleted from the booth PC. The AI PC and projection Mac cycle finished portraits through the projection show and discard them; no portraits are archived on-site. Settings, localization (`se` / `en` JSON under `StreamingAssets/Localization`), and content are all editable without a rebuild, so gallery staff can swap wording or fix a typo while the spot is off.
-
-<Callout emoji="ℹ️">
-The AI workflow, deployment, and recovery paths shown above are described at the architectural level. Specific client hostnames, GitLab repository URLs, runbook PDFs, and anyDesk credentials used during the engagement are intentionally omitted from this case study.
-</Callout>
+The Unity WebGL photo-booth apps are deployed as **Pixilab Blocks** spots, started when the spot is turned on. Settings, localization (`se` / `en` JSON under `StreamingAssets/Localization`), and content are all editable without a rebuild, so gallery staff can swap wording or fix a typo while the spot is off.
 
 ## Outcomes
 
