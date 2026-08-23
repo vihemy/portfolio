@@ -1,0 +1,116 @@
+Physical-Digital Art Exploration Tool
+---
+title: Physical-Digital Art Exploration Tool
+year: 2025
+client: Trapholt
+clientType: Danish art & design museum
+role: Full-stack developer (No Parking Production)
+projectType: Greenfield project
+stack: [SvelteKit, TypeScript, SQLite, OpenAI API, MQTT, Sanity, Pixilab Blocks, PM2, Mailchimp]
+summary: A digital-physical art exploration platform installed at Trapholt Museum, connecting 10+ art selection kiosks, NFC-enabled handheld devices, visitors' smartphones, live wall displays, and staff-facing tools.
+tags: [SvelteKit, Sanity, MQTT, SQL]
+hardware: Custom NFC-scanning handheld devices, touchscreen kiosks, visitors' own smartphones, large wall displays
+heroImage: /projects/physical-digital-art-tool/wall-display.jpg
+featured: true
+---
+
+<Callout emoji="🛠️">
+
+**My Contributions**
+
+- Worked closely with the client throughout development and delivery, translating needs and feedback into product and technical decisions.
+- Developed the web-based visitor journey across museum kiosk stations and visitors' own mobile phones.
+- Built a staff-facing CMS combining the client's existing artwork database with project-specific content and survey management.
+- Integrated the platform with the client's existing email marketing system.
+
+</Callout>
+
+At **Trapholt Museum** in Kolding, Denmark, the exhibition *Til Vægs* gives visitors an interactive way to explore and connect with artworks.
+
+Visitors carry an ESP32-powered handheld device through the exhibition and scan artworks that catch their attention. At the end of the route, they transfer their selections to a kiosk, where they can explore the artworks in more detail, select favourites, and answer a short survey.
+
+The platform then uses their selections and survey responses to show connections between their preferences and those of other visitors. An LLM-generated reflection adds a more personal layer to the experience, before the visitor continues on their own phone with a short guided meditation focused on their favourite artwork.
+
+## A connected visitor experience
+
+The project brought several different interfaces and devices together as one visitor journey:
+
+- **Handheld devices** — custom ESP32-based devices with NFC scanning, used to collect artworks throughout the exhibition.
+- **Kiosk stations** — touchscreen interfaces for transferring selections, browsing artworks, completing surveys, and continuing the experience.
+- **Visitors' smartphones** — connected to the kiosk experience through a QR code, allowing the visitor to continue the journey on their own device.
+- **Wall displays** — large-format displays showing live, anonymised visualisations of visitor interactions.
+
+
+## Building the visitor journey
+
+My main contribution was developing the web-based experience that visitors encounter at the kiosk stations and on their phones.
+
+Built with SvelteKit and Svelte 5, the experience covers the different stages of the visitor journey, from registration and artwork exploration through surveys, reflection, email opt-in, and the transition to mobile.
+
+The application uses a local SQLite database as its primary data store and as a local cache of the artwork, survey, and other content required by the exhibition. Rather than relying on external services for every interaction, the exhibition runs primarily against this local dataset. External systems such as Sanity synchronise with the local database, keeping content up to date while allowing the visitor experience to remain largely independent of the network.
+
+This was particularly important for an exhibition environment, where network interruptions or external service latency shouldn't interrupt a visitor's interaction. Keeping the operational data locally also makes the installation more predictable and resilient during day-to-day museum operation.
+
+The kiosk experience also needed to work across multiple screens and surfaces, with different views kept in sync during parts of the interaction. The platform uses server-sent events for this communication. Pixilab Blocks served as the content delivery and control layer for the exhibition, hosting the SvelteKit applications and providing the interface for managing and controlling the different display surfaces.
+
+<Image
+  src="/projects/physical-digital-art-tool/wall-display.jpg"
+  alt="User scanning a artwork with the handheld device"
+  width={1366}
+  height={911}
+  sizes="(max-width: 768px) 100vw, 900px"
+  className="w-full h-auto rounded-lg"
+/>
+<Caption>User scanning a artwork with the handheld device</Caption>
+
+<Image
+  src="/projects/physical-digital-art-tool/1757484130601.jpg"
+  alt="User exploring selected artworks at kiosk station after handheld data offload"
+  width={480}
+  height={720}
+  sizes="(max-width: 768px) 100vw, 900px"
+  className="w-full h-auto rounded-lg"
+/>
+<Caption>ser exploring selected artworks at kiosk station after handheld data offload</Caption>
+
+## Content and survey management
+
+Alongside the visitor-facing experience, I worked on the staff-facing CMS built with Sanity.
+
+We built a service that pulls artwork data from the museum's existing artwork database and synchronises it into Sanity, where it can be extended with content specific to the art exploration tool. The CMS also provides an interface for staff to create and manage the surveys used throughout the visitor journey.
+
+This allows museum staff to manage the experience's content without requiring changes to the visitor-facing application.
+
+The platform supports several types of surveys, including demographic questions, segmentation, reflection, ratings, multiple-choice questions, and other interaction types used both within the visitor experience and for staff analysis.
+
+<Image
+  src="/projects/physical-digital-art-tool/data-flow.png"
+  alt="Architecture diagram of the platform's data-flow"
+  width={5924}
+  height={7689}
+  sizes="(max-width: 768px) 100vw, 900px"
+  className="w-full h-auto rounded-lg"
+/>
+<Caption>Architecture diagram of the platform's data-flow</Caption>
+
+## Connecting the systems
+
+The visitor experience sits on top of a wider application stack connecting the frontend, backend, database, devices, and external services.
+
+The platform uses SvelteKit and SQLite for the core web application and data storage, with MQTT handling communication from the handheld devices. Content is managed through Sanity, while other integrations connect the platform to the museum's existing systems and services.
+
+I also integrated the platform with the client's existing email marketing system, allowing visitors who opted in to receive personalised follow-up content based on their interactions and journey through the exhibition.
+
+## Data and research
+
+A central part of the platform is collecting and making sense of visitor interactions.
+
+The system records artwork selections, survey responses, visitor segments, and other interactions throughout the experience. The team also built export functionality so the museum's research collaborators can work with the collected data outside the application.
+
+This creates a bridge between the immediate visitor experience and the museum's longer-term interest in understanding how audiences interact with the collection.
+
+## Delivery
+
+The project was developed as a team at **No Parking Production**, working closely with Trapholt throughout development and delivery.
+
+The result is a multi-surface digital-physical experience deployed across the exhibition: from custom handheld devices and touchscreen kiosks to visitors' own phones, live exhibition displays, and staff-facing tools.
