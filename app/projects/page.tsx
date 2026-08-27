@@ -36,7 +36,7 @@ export default function Projects() {
       <h1 className="mb-8 text-2xl font-medium tracking-tight">Projects</h1>
       <div className="prose prose-neutral dark:prose-invert mb-12">
         <p>
-          These are a selection of projects either for clients or for internal use, I've contributed to. If your're interested in knowing more about implementation or process, feel free to reach out.
+          These are a selection of projects I've contributed to. If your're interested in knowing more about implementation or process, feel free to reach out.
         </p>
       </div>
 

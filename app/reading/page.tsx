@@ -61,7 +61,9 @@ export default function Reading() {
     <section>
       <h1 className="mb-4 text-2xl font-medium tracking-tight">Reading</h1>
       <p className="prose prose-neutral dark:prose-invert mb-10 text-neutral-600 dark:text-neutral-400">
-        To me, practical experience goes hand in hand with reading. These are some of the books that have shaped my thinking as a professional the most.
+        I aim to always be in the middle of a book. Approaching a new domain I try to get my hands dirty with a concrete project, while reading about the topic in parallel. 
+        
+        These are some of the books that have shaped my thinking as a professional the most.
       </p>
 
       {groups.map(({ category, books }) => (
