@@ -26,29 +26,26 @@ export default function Page() {
 
       <div className="prose">
         <p>
-          Hi, I'm Victor. I'm a{" "}
-          <strong>full-stack developer with a product mindset</strong>, based in
-          Copenhagen. I care about how things work, from the code all the way to
-          the person on the other end.
+          Hi, I'm Victor, a{" "}
+          <strong>product-minded software developer</strong> based in
+          Copenhagen. I care about how software works across the whole product:
+          the code behind it, the people who use it, and the business it's created within.
         </p>
         <p>
-          My background spans{" "}
-          <strong>engineering, design, and communication</strong>. Over the past
-          six years, I've worked professionally across{" "}
-          <strong>software, GenAI, and physical computing</strong>, building web
-          applications, distributed systems, and interactive museum
-          installations. I'm as comfortable talking to users and clients as I am
-          digging into architecture and code.
+          Over the past six years, I've worked across{" "}
+          <strong>software, generative AI, and physical computing</strong>,
+          building web applications, distributed systems, and interactive museum
+          installations. My background in{" "}
+          <strong>engineering, design, and communication</strong> helps me move
+          from conversations with users and stakeholders to decisions about
+          architecture and code.
         </p>
         <p>
-          What ties it all together is a curiosity about{" "}
-          <strong>how people engage with digital systems</strong>{" "}
-          — what pulls them in, what pushes them away, and how to design for the
-          messy space in between.
-        </p>
-        <p>
-          On this site I share projects and thoughts on programming, design,
-          learning, and whatever else catches my attention.
+          What ties it all together is a deep-seated curiosity about{" "}
+          how <strong>people</strong> engage with{" "}
+          <strong>digital systems</strong>: what draws them in, what gets in
+          their way, and how thoughtful development can make those experiences
+          more useful.
         </p>
         <p>
           You can find my professional background on{" "}
