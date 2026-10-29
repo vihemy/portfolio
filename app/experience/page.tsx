@@ -3,7 +3,7 @@ import Link from "next/link";
 import { PageTitle } from "app/components/section";
 
 export const metadata: Metadata = {
-  title: "Experience",
+  title: "Background",
   description:
     "Work and education across product development, software engineering, interaction design, and digital experiences.",
 };
@@ -85,7 +85,7 @@ const productRoles = [
 export default function Experience() {
   return (
     <section>
-      <PageTitle>Experience</PageTitle>
+      <PageTitle>Background</PageTitle>
 
       <p className="mb-8 text-[1.0625rem] leading-relaxed text-ink-soft">
       I’m a software developer who takes a key technical role from product discovery and prototyping through deployment and ongoing operation. I draw on my background in digital design and communication to build products that meet the needs of both users and stakeholders.
@@ -119,7 +119,7 @@ export default function Experience() {
             </dt>
             <dd className="mt-2">
               <span className="block text-[0.975rem] font-medium text-ink">
-                applications &amp; installations developed
+                applications developed
               </span>
               <span className="meta mt-1 block">
                 Across product roles, from early concepts through production
