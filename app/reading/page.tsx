@@ -57,9 +57,11 @@ export default function Reading() {
       <PageTitle>Reading</PageTitle>
       <div className="prose mb-12">
         <p>
-          I aim to always be in the middle of a book. Approaching a new domain I try to get my hands dirty with a concrete project, while reading about the topic in parallel.
+          I aim to always be in the middle of a book. Be it technical, design-oriented or fiction, I find all books to strengthen the foundation of my thinking.
 
-          These are some of the books that have shaped my thinking as a professional the most.
+          These are some of the books that have done this the most.
+
+          The ultra short list I recommend any one who'll listen: Philosophy of Software Design, Design of Everyday Things, The 5 Elements of Effective Thinking.
         </p>
       </div>
 
