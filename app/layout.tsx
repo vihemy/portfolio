@@ -39,6 +39,7 @@ export const metadata: Metadata = {
   twitter: {
     title: metaData.name,
     card: "summary_large_image",
+    images: [metaData.ogImage],
   },
   // icons: {
   //   icon: "/favicon.ico",
@@ -93,20 +94,22 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="vihemy.com" />
         <link rel="manifest" href="/favicons/site.webmanifest" />
       </head>
-      <body className="antialiased flex flex-col items-center justify-center mx-auto mt-2 lg:mt-8 mb-20 lg:mb-40">
+      <body className="font-sans bg-bg text-ink antialiased flex flex-col items-center mx-auto mt-2 lg:mt-8 mb-16 lg:mb-24">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
-          <main className="flex-auto min-w-0 mt-2 md:mt-6 flex flex-col px-6 sm:px-4 md:px-0 max-w-[640px] w-full">
+          <div className="flex-auto min-w-0 mt-2 md:mt-6 flex flex-col px-6 md:px-0 max-w-column w-full">
             <Navbar />
-            {children}
+            <main id="main" className="min-w-0">
+              {children}
+            </main>
             <Footer />
-            <Analytics />
-            <SpeedInsights />
-          </main>
+          </div>
+          <Analytics />
+          <SpeedInsights />
         </ThemeProvider>
       </body>
     </html>

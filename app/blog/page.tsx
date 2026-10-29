@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { formatDate, getBlogPosts } from "app/lib/posts";
+import { formatDate, getSortedBlogPosts } from "app/lib/posts";
+import { Arrow, PageTitle } from "app/components/section";
 
 export const metadata = {
   title: "Blog",
@@ -7,39 +8,36 @@ export const metadata = {
 };
 
 export default function BlogPosts() {
-  let allBlogs = getBlogPosts();
+  const posts = getSortedBlogPosts();
 
   return (
     <section>
-      <h1 className="mb-8 text-2xl font-medium tracking-tight">Blog</h1>
-      <div>
-        {allBlogs
-          .sort((a, b) => {
-            if (
-              new Date(a.metadata.publishedAt) >
-              new Date(b.metadata.publishedAt)
-            ) {
-              return -1;
-            }
-            return 1;
-          })
-          .map((post) => (
+      <PageTitle>Blog</PageTitle>
+      <ul className="mt-10 divide-y divide-line border-t border-line">
+        {posts.map((post) => (
+          <li key={post.slug}>
             <Link
-              key={post.slug}
-              className="flex flex-col space-y-1 mb-4 transition-opacity duration-200 hover:opacity-80"
               href={`/blog/${post.slug}`}
+              className="group block py-6"
             >
-              <div className="w-full flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-1 sm:space-y-0 sm:space-x-2">
-                <p className="text-black dark:text-white tracking-tight">
-                  {post.metadata.title}
+              <time dateTime={post.metadata.publishedAt} className="meta">
+                {formatDate(post.metadata.publishedAt)}
+              </time>
+              <h2 className="title mt-1.5 text-[1.25rem] leading-snug font-medium tracking-[-0.01em] text-ink decoration-accent decoration-1 underline-offset-4 group-hover:underline">
+                {post.metadata.title}
+              </h2>
+              {post.metadata.summary && (
+                <p className="mt-2 text-[1rem] leading-relaxed text-ink-soft">
+                  {post.metadata.summary}
                 </p>
-                <p className="text-neutral-600 dark:text-neutral-400 tabular-nums text-sm">
-                  {formatDate(post.metadata.publishedAt, false)}
-                </p>
-              </div>
+              )}
+              <span className="meta mt-3 inline-block text-ink transition-colors group-hover:text-accent">
+                Read <Arrow />
+              </span>
             </Link>
-          ))}
-      </div>
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }

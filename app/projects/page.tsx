@@ -1,98 +1,69 @@
-import React from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { getProjectPosts } from "app/lib/posts";
-import type { Project } from "./project-data";
+import { getSortedProjectPosts } from "app/lib/posts";
+import { Arrow, PageTitle } from "app/components/section";
 
 export const metadata: Metadata = {
   title: "Projects",
   description: "Case studies of work I have led or built end-to-end.",
 };
 
-function Chip({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="inline-flex items-center rounded-full border border-neutral-200 dark:border-neutral-800 px-2.5 py-0.5 text-xs text-neutral-700 dark:text-neutral-300">
-      {children}
-    </span>
-  );
-}
-
-function sortProjects(posts: { metadata: Project; slug: string }[]) {
-  return [...posts].sort((a, b) => {
-    const af = a.metadata.featured ? 1 : 0;
-    const bf = b.metadata.featured ? 1 : 0;
-    if (af !== bf) return bf - af;
-    return (b.metadata.year ?? 0) - (a.metadata.year ?? 0);
-  });
-}
-
 export default function Projects() {
-  const posts = getProjectPosts();
-  const ordered = sortProjects(posts);
+  const projects = getSortedProjectPosts();
 
   return (
     <section>
-      <h1 className="mb-8 text-2xl font-medium tracking-tight">Projects</h1>
-      <div className="prose prose-neutral dark:prose-invert mb-12">
+      <PageTitle>Projects</PageTitle>
+      <div className="prose mb-12">
         <p>
-          These are a selection of projects I've contributed to. If your're interested in knowing more about implementation or process, feel free to reach out.
+          These are a selection of projects I've contributed to. If you're
+          interested in knowing more about implementation or process, feel free
+          to reach out.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {ordered.map((post) => {
-          const m = post.metadata;
-          const href = `/projects/${post.slug}`;
-          return (
-            <Link
-              key={post.slug}
-              href={href}
-              className="group flex flex-col rounded-lg overflow-hidden border border-neutral-200 dark:border-neutral-800 hover:border-neutral-400 dark:hover:border-neutral-600 transition-colors"
-            >
-              <div className="relative w-full aspect-[16/10] bg-neutral-100 dark:bg-neutral-900">
+      <ul className="flex flex-col gap-14">
+        {projects.map(({ slug, metadata: m }, i) => (
+          <li key={slug}>
+            <Link href={`/projects/${slug}`} className="group block">
+              <div className="relative aspect-[16/9] w-full overflow-hidden rounded-lg bg-surface ring-1 ring-inset ring-line">
                 <Image
                   src={m.heroImage}
-                  alt={m.title}
+                  alt=""
                   fill
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  className="object-cover"
-                  priority={Boolean(m.featured)}
+                  sizes="(max-width: 768px) 100vw, 640px"
+                  className="object-cover transition-transform duration-700 ease-out-soft group-hover:scale-[1.02] motion-reduce:transition-none"
+                  priority={i === 0}
                 />
               </div>
 
-              <div className="p-5 flex flex-col gap-3">
-                <div className="flex items-baseline justify-between">
-                  <h2 className="text-lg font-medium tracking-tight leading-tight">
-                    {m.title}
-                  </h2>
-                  <span className="text-neutral-600 dark:text-neutral-400 tabular-nums text-sm">
-                    {m.year}
-                  </span>
-                </div>
+              <div className="mt-4 grid grid-cols-[1fr_auto] items-baseline gap-x-4">
+                <h2 className="text-[1.375rem] leading-snug font-medium tracking-[-0.01em] text-ink decoration-accent decoration-1 underline-offset-4 group-hover:underline">
+                  {m.title}
+                </h2>
+                <span className="meta">{m.year}</span>
+              </div>
 
-                {m.client && (
-                  <p className="text-sm text-neutral-600 dark:text-neutral-400">
-                    {m.client}
-                  </p>
-                )}
+              <p className="meta mt-1">
+                {m.client}
+                {m.clientType ? ` · ${m.clientType}` : ""}
+              </p>
 
-                <p className="prose prose-sm prose-neutral dark:prose-invert max-w-none">
-                  {m.summary}
-                </p>
+              <p className="mt-3 text-[1.0625rem] leading-relaxed text-ink-soft">
+                {m.summary}
+              </p>
 
-                <div className="flex flex-wrap gap-1.5 mt-1">
-                  <Chip>{m.role}</Chip>
-                  <Chip>{m.projectType}</Chip>
-                  {m.tags.slice(0, 4).map((tag) => (
-                    <Chip key={tag}>{tag}</Chip>
-                  ))}
-                </div>
+              <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6">
+                <p className="meta min-w-0">{m.stack.join(" · ")}</p>
+                <span className="meta shrink-0 text-ink transition-colors group-hover:text-accent">
+                  Read case study <Arrow />
+                </span>
               </div>
             </Link>
-          );
-        })}
-      </div>
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }

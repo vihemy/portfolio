@@ -1,34 +1,7 @@
-import Link from "next/link";
-
-function renderTakeaways(text: string) {
-  const parts = text.split(/(\[[^\]]+\]\([^)]+\))/g);
-
-  return (
-    <p className="text-base text-neutral-600 dark:text-neutral-400 mt-1 leading-relaxed">
-      {parts.map((part, i) => {
-        const match = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
-        if (match) {
-          const [_, label, href] = match;
-          if (href.startsWith("/")) {
-            return (
-              <Link key={i} href={href} className="underline-offset-2 underline">
-                {label}
-              </Link>
-            );
-          }
-          return (
-            <a key={i} href={href} target="_blank" rel="noopener noreferrer" className="underline-offset-2 underline">
-              {label}
-            </a>
-          );
-        }
-        return <>{part}</>;
-      })}
-    </p>
-  );
-}
 import type { Metadata } from "next";
-import { books } from "./reading-data";
+import { books, type Book } from "./reading-data";
+import { PageTitle } from "app/components/section";
+import { TextLink } from "app/components/text-link";
 
 export const metadata: Metadata = {
   title: "Reading",
@@ -41,12 +14,34 @@ const CATEGORY_ORDER = [
   "Thinking & Learning",
 ];
 
-function groupByCategory(books: typeof import("./reading-data").books) {
-  const grouped = new Map<string, typeof books>();
-  for (const book of books) {
-    const list = grouped.get(book.category) || [];
-    list.push(book);
-    grouped.set(book.category, list);
+/** Renders takeaways text, turning `[label](href)` into links. */
+function renderTakeaways(text: string) {
+  const parts = text.split(/(\[[^\]]+\]\([^)]+\))/g);
+
+  return (
+    <p className="mt-2 text-[1.0625rem] leading-relaxed text-ink-soft">
+      {parts.map((part, i) => {
+        const match = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
+        if (match) {
+          const [, label, href] = match;
+          return (
+            <TextLink key={i} href={href} className="link">
+              {label}
+            </TextLink>
+          );
+        }
+        return <span key={i}>{part}</span>;
+      })}
+    </p>
+  );
+}
+
+function groupByCategory(list: Book[]) {
+  const grouped = new Map<string, Book[]>();
+  for (const book of list) {
+    const group = grouped.get(book.category) || [];
+    group.push(book);
+    grouped.set(book.category, group);
   }
   return CATEGORY_ORDER.map((cat) => ({
     category: cat,
@@ -59,33 +54,30 @@ export default function Reading() {
 
   return (
     <section>
-      <h1 className="mb-4 text-2xl font-medium tracking-tight">Reading</h1>
-      <p className="prose prose-neutral dark:prose-invert mb-10 text-neutral-600 dark:text-neutral-400">
-        I aim to always be in the middle of a book. Approaching a new domain I try to get my hands dirty with a concrete project, while reading about the topic in parallel. 
-        
-        These are some of the books that have shaped my thinking as a professional the most.
-      </p>
+      <PageTitle>Reading</PageTitle>
+      <div className="prose mb-12">
+        <p>
+          I aim to always be in the middle of a book. Approaching a new domain I try to get my hands dirty with a concrete project, while reading about the topic in parallel.
+
+          These are some of the books that have shaped my thinking as a professional the most.
+        </p>
+      </div>
 
       {groups.map(({ category, books }) => (
-        <div key={category} className="mb-10">
-          <h2 className="text-sm font-medium text-neutral-500 dark:text-neutral-400 mb-4 tracking-wide">
-            {category}
-          </h2>
-          <div className="space-y-7">
-            {books.map((book, i) => (
-              <div key={i}>
-                <span className="text-black dark:text-white font-medium">
+        <section key={category} className="mb-14">
+          <h2 className="meta mb-2 border-b border-line pb-2 text-ink">{category}</h2>
+          <ul className="divide-y divide-line">
+            {books.map((book) => (
+              <li key={book.title} className="py-6">
+                <h3 className="text-[1.1875rem] leading-snug font-medium text-ink">
                   {book.title}
-                </span>
-                <span className="text-neutral-500 dark:text-neutral-400">
-                  {" — "}
-                  {book.author}
-                </span>
-                {book.takeaways && renderTakeaways(book.takeaways)}
-              </div>
+                </h3>
+                <p className="meta mt-0.5">{book.author}</p>
+                {book.takeaways && renderTakeaways(book.takeaways.trim())}
+              </li>
             ))}
-          </div>
-        </div>
+          </ul>
+        </section>
       ))}
     </section>
   );

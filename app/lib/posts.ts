@@ -132,6 +132,25 @@ export function getProjectPosts(): ProjectPost[] {
   );
 }
 
+/** Blog posts, newest first. */
+export function getSortedBlogPosts() {
+  return getBlogPosts().sort(
+    (a, b) =>
+      new Date(b.metadata.publishedAt).getTime() -
+      new Date(a.metadata.publishedAt).getTime()
+  );
+}
+
+/** Projects, featured first, then newest first. */
+export function getSortedProjectPosts(): ProjectPost[] {
+  return getProjectPosts().sort((a, b) => {
+    const af = a.metadata.featured ? 1 : 0;
+    const bf = b.metadata.featured ? 1 : 0;
+    if (af !== bf) return bf - af;
+    return (b.metadata.year ?? 0) - (a.metadata.year ?? 0);
+  });
+}
+
 export function formatDate(date: string, includeRelative = false) {
   let currentDate = new Date();
   if (!date.includes("T")) {

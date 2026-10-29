@@ -1,6 +1,7 @@
 import React from "react";
-import Link from "next/link";
 import Image from "next/image";
+import { TextLink } from "./text-link";
+import { Compare } from "./compare";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { highlight } from "sugar-high";
 import { TweetComponent } from "./tweet";
@@ -12,22 +13,45 @@ import remarkMath from "remark-math";
 import "katex/dist/katex.min.css";
 
 function CustomLink(props) {
-  let href = props.href;
-  if (href.startsWith("/")) {
-    return (
-      <Link href={href} {...props}>
-        {props.children}
-      </Link>
-    );
-  }
-  if (href.startsWith("#")) {
-    return <a {...props} />;
-  }
-  return <a target="_blank" rel="noopener noreferrer" {...props} />;
+  return <TextLink {...props} />;
 }
 
-function RoundedImage(props) {
-  return <Image alt={props.alt} className="rounded-lg" {...props} />;
+/**
+ * MDX <Image>. Pass `wide` to let a figure (e.g. a diagram) break out of the
+ * reading column on large screens; wide figures also link to the full-size
+ * file so dense diagrams stay legible.
+ */
+function RoundedImage({ wide, className, ...props }: any) {
+  const img = (
+    <Image
+      alt={props.alt}
+      className={`rounded-lg ${className ?? ""}`}
+      {...props}
+      sizes={
+        wide ? "(max-width: 1008px) calc(100vw - 3rem), 960px" : props.sizes
+      }
+    />
+  );
+
+  if (!wide) return img;
+
+  return (
+    <a
+      href={props.src}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="breakout group relative my-8 block !no-underline"
+      aria-label={`${props.alt} (open full size in a new tab)`}
+    >
+      {img}
+      <span
+        aria-hidden="true"
+        className="meta absolute right-3 bottom-3 rounded-md bg-bg/90 px-2 py-1 text-ink opacity-0 ring-1 ring-line backdrop-blur transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100"
+      >
+        Full size ↗
+      </span>
+    </a>
+  );
 }
 
 function Code({ children, ...props }) {
@@ -60,12 +84,34 @@ function Strikethrough(props) {
   return <del {...props} />;
 }
 
-function Callout(props) {
+/**
+ * Callout block. If the first paragraph is only bold text (e.g.
+ * "**Outcomes**"), it is lifted out and rendered as a small mono label.
+ * The legacy `emoji` prop is accepted but intentionally not rendered.
+ */
+function Callout({ children }: { emoji?: string; children: React.ReactNode }) {
+  const items = React.Children.toArray(children).filter(
+    (c) => !(typeof c === "string" && c.trim() === "")
+  );
+
+  let label: React.ReactNode = null;
+  const first = items[0];
+  if (React.isValidElement<{ children?: React.ReactNode }>(first)) {
+    const inner = first.props.children;
+    if (
+      React.isValidElement<{ children?: React.ReactNode }>(inner) &&
+      inner.type === "strong"
+    ) {
+      label = inner.props.children;
+      items.shift();
+    }
+  }
+
   return (
-    <div className="px-4 py-3 bg-[#F7F7F7] dark:bg-[#181818] rounded p-1 text-sm flex items-center text-neutral-900 dark:text-neutral-100 mb-8">
-      <div className="flex items-center w-4 mr-4">{props.emoji}</div>
-      <div className="w-full callout leading-relaxed">{props.children}</div>
-    </div>
+    <aside className="callout my-8 rounded-lg border border-line bg-surface/60 px-5 py-4 text-[1rem] leading-relaxed">
+      {label && <p className="meta !mb-2 text-ink">{label}</p>}
+      {items}
+    </aside>
   );
 }
 
@@ -117,6 +163,7 @@ let components = {
   Table,
   del: Strikethrough,
   Callout,
+  Compare,
 };
 
 export function CustomMDX(props) {

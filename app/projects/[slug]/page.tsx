@@ -1,8 +1,8 @@
 import React from "react";
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import { notFound } from "next/navigation";
+import { BackLink, DetailTitle } from "app/components/section";
 import { CustomMDX } from "app/components/mdx";
 import { getProjectPosts } from "app/lib/posts";
 import { metaData } from "app/config";
@@ -25,7 +25,7 @@ export async function generateMetadata({
   const m = post.metadata;
   const title = m.title;
   const description = m.summary;
-  const ogImage = `${metaData.baseUrl}/og?title=${encodeURIComponent(title)}`;
+  const ogImage = `${metaData.baseUrl}${m.heroImage}`;
 
   return {
     title,
@@ -46,28 +46,19 @@ export async function generateMetadata({
   };
 }
 
-function MetaRow({ label, children }: { label: string; children: React.ReactNode }) {
+function MetaRow({
+  label,
+  children,
+  wide = false,
+}: {
+  label: string;
+  children: React.ReactNode;
+  wide?: boolean;
+}) {
   return (
-    <div className="flex flex-col gap-0.5 py-2 border-t border-neutral-200 dark:border-neutral-800">
-      <dt className="text-xs uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
-        {label}
-      </dt>
-      <dd className="text-sm text-neutral-800 dark:text-neutral-200">{children}</dd>
-    </div>
-  );
-}
-
-function ChipList({ items }: { items: string[] }) {
-  return (
-    <div className="flex flex-wrap gap-1.5">
-      {items.map((item) => (
-        <span
-          key={item}
-          className="inline-flex items-center rounded-full border border-neutral-200 dark:border-neutral-800 px-2.5 py-0.5 text-xs text-neutral-700 dark:text-neutral-300"
-        >
-          {item}
-        </span>
-      ))}
+    <div className={`grid grid-cols-[5.5rem_1fr] gap-x-4 sm:block ${wide ? "sm:col-span-2" : ""}`}>
+      <dt className="meta">{label}</dt>
+      <dd className="text-[0.975rem] leading-snug text-ink sm:mt-1">{children}</dd>
     </div>
   );
 }
@@ -104,46 +95,54 @@ export default async function ProjectPage({
         }}
       />
 
-      <Link
-        href="/projects"
-        className="text-sm text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 transition-colors"
-      >
-        &larr; Projects
-      </Link>
+      <BackLink href="/projects">Projects</BackLink>
+      <DetailTitle>{m.title}</DetailTitle>
 
-      <h1 className="title mb-3 mt-6 font-medium text-2xl tracking-tight">
-        {m.title}
-      </h1>
-
-      <p className="text-neutral-600 dark:text-neutral-400 text-sm mb-2">
-        <span className="tabular-nums">{m.year}</span>
-        {m.client ? ` · ${m.client}` : ""}
-        {m.clientType ? ` · ${m.clientType}` : ""}
+      <p className="mb-10 text-[1.1875rem] leading-relaxed text-ink-soft">
+        {m.summary}
       </p>
 
-      <p className="prose prose-neutral dark:prose-invert mb-8">{m.summary}</p>
-
-      <div className="relative w-full aspect-[16/9] bg-neutral-100 dark:bg-neutral-900 rounded-lg overflow-hidden mb-8">
+      <div className="breakout relative mb-10 aspect-[16/9] overflow-hidden rounded-lg bg-surface ring-1 ring-inset ring-line">
         <Image
           src={m.heroImage}
-          alt={m.title}
+          alt=""
           fill
-          sizes="(max-width: 768px) 100vw, 900px"
+          sizes="(max-width: 1008px) calc(100vw - 3rem), 960px"
           className="object-cover"
           priority
         />
       </div>
 
-      <dl className="mb-8 max-w-xl">
-        <MetaRow label="Role">{m.role}</MetaRow>
-        <MetaRow label="Type">{m.projectType}</MetaRow>
-        <MetaRow label="Stack">
-          <ChipList items={m.stack} />
-        </MetaRow>
-        {m.hardware && <MetaRow label="Hardware">{m.hardware}</MetaRow>}
-      </dl>
+      <section aria-labelledby="at-a-glance" className="mb-4 border-y border-line py-6">
+        <h2 id="at-a-glance" className="meta mb-5 text-ink">At a glance</h2>
+        <dl className="grid gap-y-4 sm:grid-cols-2 sm:gap-x-8 sm:gap-y-5">
+          {m.client && (
+            <MetaRow label="Client">
+              {m.client}
+              {m.clientType && (
+                <span className="block text-ink-soft text-[0.9rem]">{m.clientType}</span>
+              )}
+            </MetaRow>
+          )}
+          <MetaRow label="Year">
+            <span className="tabular-nums">{m.year}</span>
+          </MetaRow>
+          <MetaRow label="Role">{m.role}</MetaRow>
+          <MetaRow label="Type">{m.projectType}</MetaRow>
+          <MetaRow label="Stack" wide>
+            <span className="font-mono text-[0.8125rem] leading-relaxed text-ink-soft">
+              {m.stack.join(" · ")}
+            </span>
+          </MetaRow>
+          {m.hardware && (
+            <MetaRow label="Hardware" wide>
+              {m.hardware}
+            </MetaRow>
+          )}
+        </dl>
+      </section>
 
-      <article className="prose prose-quoteless prose-neutral dark:prose-invert">
+      <article className="prose prose-quoteless">
         <CustomMDX source={post.content} />
       </article>
     </section>

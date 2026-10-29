@@ -4,7 +4,11 @@ import { socialLinks } from "./config";
 export default function Page() {
   return (
     <section>
-      <a href={socialLinks.linkedin} target="_blank">
+      <a
+        href={socialLinks.linkedin}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         <Image
           src="/np_profil.jpg"
           alt="Profile photo"
@@ -18,9 +22,9 @@ export default function Page() {
 
       <h1 className="mb-8 text-2xl font-medium tracking-tight">
         Victor Hempel-Mydtskov
-      </h1> 
+      </h1>
 
-      <div className="prose prose-neutral dark:prose-invert">
+      <div className="prose">
         <p>
           Hi, I'm Victor. I'm a{" "}
           <strong>full-stack developer with a product mindset</strong>, based in
@@ -38,9 +42,7 @@ export default function Page() {
         </p>
         <p>
           What ties it all together is a curiosity about{" "}
-          <strong>
-            how people engage with digital systems
-          </strong>{" "}
+          <strong>how people engage with digital systems</strong>{" "}
           — what pulls them in, what pushes them away, and how to design for the
           messy space in between.
         </p>
@@ -50,11 +52,11 @@ export default function Page() {
         </p>
         <p>
           You can find my professional background on{" "}
-          <a target="_blank" href={socialLinks.linkedin}>
+          <a target="_blank" href={socialLinks.linkedin} rel="noopener noreferrer">
             LinkedIn
           </a>
           , or{" "}
-          <a target="_blank" href={socialLinks.email}>
+          <a target="_blank" href={socialLinks.email} rel="noopener noreferrer">
             send me an email
           </a>{" "}
           if you'd like to chat.

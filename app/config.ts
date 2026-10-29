@@ -2,7 +2,7 @@ export const metaData = {
   baseUrl: "https://vihemy.com",
   title: "vihemy",
   name: "Victor Hempel-Mydtskov",
-  ogImage: "/opengraph-image.png", // TODO: change opengraph logo
+  ogImage: "/og?title=Victor%20Hempel-Mydtskov",
   description:
     "Full-stack developer with a product mindset, based in Copenhagen. I build across web, GenAI, and physical computing",
 };
