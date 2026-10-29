@@ -102,13 +102,20 @@ export default async function ProjectPage({
         {m.summary}
       </p>
 
-      <div className="breakout relative mb-10 aspect-[16/9] overflow-hidden rounded-lg bg-surface ring-1 ring-inset ring-line">
+      <div
+        className={`breakout relative mb-10 aspect-[16/9] overflow-hidden rounded-lg ring-1 ring-inset ring-line ${
+          m.heroImageFit === "contain" ? "bg-black" : "bg-surface"
+        }`}
+        style={{ aspectRatio: m.heroImageAspectRatio }}
+      >
         <Image
           src={m.heroImage}
           alt=""
           fill
           sizes="(max-width: 1008px) calc(100vw - 3rem), 960px"
-          className="object-cover"
+          className={
+            m.heroImageFit === "contain" ? "object-contain" : "object-cover"
+          }
           priority
         />
       </div>

@@ -27,13 +27,20 @@ export default function Projects() {
         {projects.map(({ slug, metadata: m }, i) => (
           <li key={slug}>
             <Link href={`/projects/${slug}`} className="group block">
-              <div className="relative aspect-[16/9] w-full overflow-hidden rounded-lg bg-surface ring-1 ring-inset ring-line">
+              <div
+                className={`relative aspect-[16/9] w-full overflow-hidden rounded-lg ring-1 ring-inset ring-line ${
+                  m.heroImageFit === "contain" ? "bg-black" : "bg-surface"
+                }`}
+                style={{ aspectRatio: m.heroImageAspectRatio }}
+              >
                 <Image
                   src={m.heroImage}
                   alt=""
                   fill
                   sizes="(max-width: 768px) 100vw, 640px"
-                  className="object-cover transition-transform duration-700 ease-out-soft group-hover:scale-[1.02] motion-reduce:transition-none"
+                  className={`${
+                    m.heroImageFit === "contain" ? "object-contain" : "object-cover"
+                  } transition-transform duration-700 ease-out-soft group-hover:scale-[1.02] motion-reduce:transition-none`}
                   priority={i === 0}
                 />
               </div>

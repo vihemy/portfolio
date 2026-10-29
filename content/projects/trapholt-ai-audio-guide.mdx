@@ -1,0 +1,111 @@
+---
+title: Making 1,500 Audio Guides
+year: 2026
+client: Trapholt
+clientType: Danish art & design museum
+role: Developer (No Parking Production)
+projectType: AI content-generation pipeline
+stack: [Sanity, Sanity Functions, OpenAI Responses API, ElevenLabs]
+summary: A pipeline that turns Trapholt's collection data into curated audio guides in Danish, English, and German.
+tags: [AI, Sanity, Audio]
+heroImage: /projects/trapholt-audio-guide/overview.png
+heroImageFit: contain
+heroImageAspectRatio: 1.9026
+featured: true
+---
+
+I built a pipeline that turns exhibit metadata into multilingual audio guides, inside the CMS the client already uses. This post walks through why it was needed, what it had to do, how it was built, and what changed.
+
+## Situation: A physical/digital exhibition experience
+
+As part of a major physical expansion of Trapholt Museum of Modern Art and Design in Kolding, my team at No Parking was tasked with developing a digital exhibition experience and product environment. It would be the backbone of the museum's future digital on-premise user experience.
+
+We had built an early in-production iteration of the system, which was to be expanded with the following capabilities:
+
+- Exhibition stations where visitors can select, explore, and interact with digital replicas of exhibits, and collect them as favourites. Each user is identified by a personal wristband.
+- Photobooths to add user images to their selection profile.
+- Design stations where visitors design their own exhibition rooms with their collected artworks.
+- A cinema that generates a short, personalized film about the user's exhibition design and artwork selections.
+- A web app, linked to the wristband at login, that serves audio content for all exhibitions and personalized content based on selections.
+
+This post is mainly about the last bullet: audio guide production.
+
+## Task: 500 exhibits, three languages
+
+The user should be able to walk through the exhibition, enter an exhibit ID, and hear quality, curated audio information about that piece.
+
+That meant each of the approximately 500 exhibits would have its own one-minute audio guide in three languages.
+
+At an average of 140 words per minute, 1,500 minutes would amount to 210,000 words of manuscripts, followed by the corresponding voice recordings. That was outside the scope of this project.
+
+The task therefore became: create a system that:
+
+- Automatically generates manuscripts
+- Translates them into other languages
+- Generates audio recordings
+- Handles new exhibit audio content over time
+- Can be validated by art curators
+
+Bonus points for:
+
+- No vendor lock-in
+- Ideally, no new systems to learn
+
+## Action: An event-driven pipeline inside the CMS
+
+Because exhibit metadata such as curation texts, 3D scans, and high-resolution images already played a key role in the product environment we were building, we had already set up a headless CMS (Sanity) to handle exhibit data.
+
+Sanity pulls data from the museum collection database, such as exhibit titles, artists, and curation texts. It then acts as a middle layer where data specific to our digital product environment (3D model data, grouping data, exhibition-specific IDs, etc.) is added.
+
+Having this rich, structured metadata for each exhibit provided near-optimal grounds for an AI content-generation pipeline.
+
+The pipeline was rather simple.
+
+The audio guide generation pipeline did the following:
+
+1. Pull source data from the exhibit object. Optionally, a curator can add additional exhibit context directly to the audio guide object.
+2. Call a third-party LLM provider to generate a manuscript from exhibit source data and the instruction prompt set in the settings pane.
+3. Translate the manuscript into English and German with a third-party LLM provider.
+4. Generate audio from the localized manuscripts using a third-party TTS service.
+
+This pipeline can run on individual objects through Sanity Studio or as batch runs. It can be configured to require validation after each step or before continuing, or to run fully autonomously, auto-validating all steps and triggering when new exhibit objects are added.
+
+### Status fields as a state machine
+
+The pipeline uses Sanity's serverless service, Sanity Functions. Each audio guide content field (manuscript, translations, audio) has a status field. A curator sets a status to `requested` using a button, triggering a Sanity Function to react to that change, call the third-party inference APIs, and set the status fields on return or error. A function claims a job with a revision check (`ifRevisionId`), which makes double-clicks and duplicate events harmless.
+
+### Drafts are the approval step
+
+Functions only read and write the guide's draft. The app reads the published version, so "approved" simply means "published", with no extra workflow to build or learn.
+
+### Provider-neutral adapters
+
+The pipeline talks to `generateText()` and `synthesize()` interfaces. At the moment, OpenAI (Responses API) and ElevenLabs sit behind thin adapters using plain `fetch`. Rate limits and server errors are retried. Instruction prompts, model IDs, and voice IDs live in one settings document so curators can easily tune them.
+
+### Knowing what is out of date
+
+Every result stores a small receipt: an FNV-1a fingerprint of the content it was made from and of the settings that affect that step and language. Comparing receipts with the current state tells an editor whether a recording is current or outdated because the text or voice settings changed.
+
+## Result: From one guide at a time to the whole collection
+
+- **Single guides** run end to end on Sanity's servers: Danish manuscript, English and German translations, and audio in all three languages, reviewed and published from the Studio.
+- **Batch runs** cover any selection of works with one confirmation, run unattended, and leave a readable log of what failed and why, with a one-click retry.
+- **An overview page** shows every work's status per language in tabs (Not started, Incomplete, Complete, Failed or outdated, Unpublished), searchable by title, artist, or inventory number.
+
+The overview also flags exhibits in the original collection database that are missing curatorial source text to generate from. They now have their own tab, so the gap is visible and can be closed.
+
+<Image
+  wide
+  src="/projects/trapholt-audio-guide/overview.png"
+  alt="Sanity audio guide overview showing guide status and a completed batch run"
+  width={1855}
+  height={975}
+  className="w-full h-auto rounded-lg"
+/>
+<Caption>The overview page shows guide status across languages and a completed five-guide batch run with 30 of 30 jobs done.</Caption>
+
+## Lessons
+
+- Rich, structured collection data and today's generative AI tools open up massive content-creation potential that can provide a real competitive edge when creating exhibitions or other means of knowledge sharing.
+- TTS models are getting really good at Danish pronunciation. Danish is a somewhat low-resource language for TTS models, so I hypothesized that a pronunciation dictionary that respells words and artist names phonetically would be helpful. However, at least with ElevenLabs' new Eleven v4 model, Danish pronunciation has been excellent, and I find the pronunciation guide to be redundant for now.
+- **Simple beats complete in the UI.** The first overview had seven cell states and three filter dropdowns. Five states and a row of tabs with counts turned out to be what editors needed.

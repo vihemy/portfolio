@@ -10,6 +10,8 @@ export interface Project {
   stack: string[];
   hardware?: string;
   heroImage: string;
+  heroImageFit?: "cover" | "contain";
+  heroImageAspectRatio?: number;
   featured?: boolean;
 }
 

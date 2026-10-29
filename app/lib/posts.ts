@@ -99,7 +99,7 @@ function parseProjectFrontmatter(fileContent: string) {
 
     if (PROJECT_ARRAY_FIELDS.has(keyName)) {
       metadata[keyName] = parseArrayField(value);
-    } else if (keyName === "year") {
+    } else if (keyName === "year" || keyName === "heroImageAspectRatio") {
       metadata[keyName] = Number(value);
     } else if (keyName === "featured") {
       metadata[keyName] = parseBooleanField(value);
